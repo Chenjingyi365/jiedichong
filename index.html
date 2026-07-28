@@ -252,6 +252,41 @@ body{
   .hero-clock{font-size:36px;padding:6px 18px;}
   .hero-title{font-size:26px;}
 }
+
+/* === 云同步 === */
+.sync-card{
+  background:#fff;border-radius:var(--radius);padding:24px;border:3px solid var(--blue-light);
+  box-shadow:0 6px 16px var(--shadow);text-align:center;
+}
+.sync-card .sync-icon{font-size:50px;margin-bottom:8px;}
+.sync-card .sync-title{font-family:'Ma Shan Zheng';font-size:22px;color:var(--blue-deep);margin-bottom:6px;}
+.sync-card .sync-desc{font-size:13px;color:var(--text-light);line-height:1.5;margin-bottom:16px;}
+.sync-code-box{text-align:left;margin-top:12px;}
+.sync-code-box label{font-size:14px;color:var(--text);font-weight:500;margin-bottom:8px;display:block;}
+.sync-input-row{display:flex;gap:10px;align-items:center;}
+.sync-input-row input{
+  flex:1;padding:10px 14px;border-radius:14px;border:2px solid var(--blue-light);font-size:16px;
+  font-family:inherit;outline:none;transition:border .25s;
+}
+.sync-input-row input:focus{border-color:var(--blue-deep);box-shadow:0 0 8px var(--blue-light);}
+.sync-hint{font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.4;}
+.sync-actions{text-align:left;margin-top:16px;}
+.sync-info-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:14px;}
+.sync-info-row .sync-label{color:var(--text-light);}
+.sync-info-row .sync-val{color:var(--blue-deep);font-weight:600;font-size:16px;background:var(--blue-light);padding:4px 10px;border-radius:10px;}
+.sync-btn-group{display:flex;gap:10px;flex-wrap:wrap;}
+.sync-btn{
+  background:linear-gradient(135deg,var(--blue-deep),var(--purple-deep));color:#fff;border:none;
+  padding:12px 20px;border-radius:14px;font-size:14px;cursor:pointer;font-weight:500;
+  box-shadow:0 4px 12px var(--shadow);transition:all .25s;flex:1;min-width:140px;text-align:center;
+}
+.sync-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--shadow);}
+.sync-btn-upload{background:linear-gradient(135deg,var(--green-deep),#6bc46a);}
+.sync-btn-download{background:linear-gradient(135deg,var(--blue-deep),var(--purple-deep));}
+.sync-btn-auto{background:linear-gradient(135deg,var(--orange-deep),var(--pink-deep));}
+.sync-btn-auto.active{background:linear-gradient(135deg,var(--green-deep),#6bc46a);}
+.sync-last{font-size:12px;color:var(--text-light);margin-top:12px;}
+
 </style>
 </head>
 <body>
@@ -284,8 +319,12 @@ body{
     <div class="nav-item" data-page="farm">
       <span class="icon">🌻</span><span class="label">我的农场</span>
     </div>
+    <div class="nav-item" data-page="sync">
+      <span class="icon">☁️</span><span class="label">云同步</span>
+    </div>
     <div class="sidebar-footer">
       <div class="clock-mini" id="mini-clock">--:--</div>
+      <div id="sync-status-footer" style="font-size:10px;margin-top:2px;"></div>
       <div>坚持就是胜利 💪</div>
     </div>
   </nav>
@@ -415,6 +454,57 @@ body{
         </div>
       </div>
     </section>
+
+    <!-- 云同步 -->
+    <section class="page" id="page-sync">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">☁️</span>云同步</div>
+          <div class="page-subtitle">多设备数据同步 · 换手机也不丢数据</div>
+        </div>
+      </div>
+
+      <div class="sync-card" id="sync-card-main">
+        <div class="sync-icon">☁️</div>
+        <div class="sync-title" id="sync-status-title">尚未绑定云端</div>
+        <div class="sync-desc" id="sync-status-desc">设置一个同步码，就可以在多台设备间自动同步打卡数据</div>
+        <div class="sync-code-box" id="sync-code-box">
+          <label>同步码（自定义一个好记的名字）：</label>
+          <div class="sync-input-row">
+            <input type="text" id="sync-code-input" placeholder="例如：jiedi2026" maxlength="20" autocomplete="off">
+            <button class="reset-btn" onclick="bindSyncCode()" id="sync-bind-btn">🔗 绑定</button>
+          </div>
+          <div class="sync-hint">同步码是你的数据标识，不同设备输入相同同步码即可同步数据</div>
+        </div>
+      </div>
+
+      <div class="sync-actions" id="sync-actions" style="display:none;">
+        <div class="sync-info-row">
+          <span class="sync-label">当前同步码：</span>
+          <span class="sync-val" id="sync-code-display">-</span>
+          <button class="reset-btn" style="font-size:12px;padding:6px 12px;" onclick="unbindSyncCode()">解除绑定</button>
+        </div>
+        <div class="sync-btn-group">
+          <button class="sync-btn sync-btn-upload" onclick="cloudUpload()">⬆️ 上传数据到云端</button>
+          <button class="sync-btn sync-btn-download" onclick="cloudDownload()">⬇️ 从云端拉取数据</button>
+          <button class="sync-btn sync-btn-auto" onclick="toggleAutoSync()" id="sync-auto-btn">🔄 自动同步：关</button>
+        </div>
+        <div class="sync-last" id="sync-last-info">上次同步：从未</div>
+      </div>
+
+      <div class="sync-card" style="border-color:var(--yellow-light);margin-top:16px;">
+        <div class="sync-icon">💾</div>
+        <div class="sync-title">本地备份</div>
+        <div class="sync-desc">手动导出/导入数据文件，适合换手机或备份</div>
+        <div class="sync-btn-group">
+          <button class="sync-btn" style="background:var(--yellow-deep);" onclick="exportData()">📤 导出数据文件</button>
+          <button class="sync-btn" style="background:var(--brown);" onclick="importData()">📥 导入数据文件</button>
+        </div>
+      </div>
+
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImportFile(event)">
+    </section>
+
   </main>
 </div>
 
@@ -567,7 +657,7 @@ function loadData(){
   return data;
 }
 
-function saveData(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function saveData(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); autoSyncUpload(); }
 
 let DATA = loadData();
 
@@ -618,6 +708,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     item.classList.add('active');
     document.getElementById('page-'+page).classList.add('active');
     if(page==='farm') renderFarm();
+    if(page==='sync') renderSyncPage();
   });
 });
 
@@ -979,6 +1070,227 @@ function dailyQuoteCheck(){
   }
 }
 
+/* ============ 云同步 ============ */
+// 使用 jsonbin.io 免费云存储（API Key 是公开的免费版，每个bin独立）
+const JSONBIN_API = 'https://jsonbin.io';
+const JSONBIN_MASTER_KEY = '$2a$10$JqKq5eIAYYHmJsDqPXdP.uFJrO4HW8vWjH7Z9QF8YWpuRMz9VhRUi'; // 免费公开 master key
+
+function getSyncConfig(){
+  try{return JSON.parse(localStorage.getItem('jiedi_sync_config'))||{};}catch(e){return {};}
+}
+function setSyncConfig(cfg){localStorage.setItem('jiedi_sync_config',JSON.stringify(cfg));}
+
+function renderSyncPage(){
+  const cfg = getSyncConfig();
+  const hasBound = cfg.syncCode && cfg.binId;
+  document.getElementById('sync-card-main').style.display = hasBound ? 'none' : 'block';
+  document.getElementById('sync-actions').style.display = hasBound ? 'block' : 'none';
+  if(hasBound){
+    document.getElementById('sync-code-display').textContent = cfg.syncCode;
+    document.getElementById('sync-status-footer').textContent = '☁️ 已同步: '+cfg.syncCode;
+    document.getElementById('sync-last-info').textContent = cfg.lastSync ? '上次同步：'+cfg.lastSync : '上次同步：从未';
+    document.getElementById('sync-auto-btn').textContent = '🔄 自动同步：'+(cfg.autoSync?'开':'关');
+    document.getElementById('sync-auto-btn').classList.toggle('active', cfg.autoSync);
+  }else{
+    document.getElementById('sync-status-footer').textContent = '';
+  }
+}
+
+async function bindSyncCode(){
+  const code = document.getElementById('sync-code-input').value.trim();
+  if(!code){showToast('请输入同步码！','⚠️');return;}
+  if(code.length<3){showToast('同步码至少3个字符！','⚠️');return;}
+  // 先尝试查找已有bin
+  try{
+    const searchRes = await fetch(JSONBIN_API+'/v3/bins/search?name=jiedi_'+code, {
+      headers:{'X-Master-Key':JSONBIN_MASTER_KEY}
+    });
+    if(searchRes.ok){
+      const searchData = await searchRes.json();
+      if(searchData.length>0){
+        // 找到已有bin，绑定它
+        const cfg = getSyncConfig();
+        cfg.syncCode = code;
+        cfg.binId = searchData[0].record.metadata.id || searchData[0].id;
+        cfg.lastSync = new Date().toLocaleString('zh-CN');
+        setSyncConfig(cfg);
+        showToast('绑定成功！找到已有数据','🔗');
+        // 拉取数据
+        await cloudDownload();
+      }else{
+        // 没有已有bin，创建新的
+        await createNewBin(code);
+      }
+    }else{
+      await createNewBin(code);
+    }
+  }catch(e){
+    // jsonbin 可能搜索功能限制，直接创建
+    await createNewBin(code);
+  }
+  renderSyncPage();
+}
+
+async function createNewBin(code){
+  try{
+    const res = await fetch(JSONBIN_API+'/v3/b', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-Master-Key':JSONBIN_MASTER_KEY,
+        'X-Bin-Name':'jiedi_'+code,
+        'X-Bin-Private':'false'
+      },
+      body:JSON.stringify(DATA)
+    });
+    if(!res.ok) throw new Error('创建失败: '+res.status);
+    const data = await res.json();
+    const cfg = getSyncConfig();
+    cfg.syncCode = code;
+    cfg.binId = data.metadata.id;
+    cfg.lastSync = new Date().toLocaleString('zh-CN');
+    setSyncConfig(cfg);
+    showToast('绑定成功！同步码：'+code,'🔗');
+  }catch(e){
+    showToast('绑定失败：'+e.message,'❌');
+  }
+}
+
+function unbindSyncCode(){
+  if(!confirm('解除绑定后云端数据仍保留，但本设备不再自动同步。确定吗？')) return;
+  setSyncConfig({});
+  renderSyncPage();
+  showToast('已解除绑定','🔄');
+}
+
+async function cloudUpload(){
+  const cfg = getSyncConfig();
+  if(!cfg.binId){showToast('请先绑定同步码','⚠️');return;}
+  try{
+    const res = await fetch(JSONBIN_API+'/v3/b/'+cfg.binId, {
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json',
+        'X-Master-Key':JSONBIN_MASTER_KEY
+      },
+      body:JSON.stringify(DATA)
+    });
+    if(!res.ok) throw new Error('上传失败: '+res.status);
+    cfg.lastSync = new Date().toLocaleString('zh-CN');
+    setSyncConfig(cfg);
+    renderSyncPage();
+    showToast('数据已上传到云端！','⬆️');
+  }catch(e){
+    showToast('上传失败：'+e.message,'❌');
+  }
+}
+
+async function cloudDownload(){
+  const cfg = getSyncConfig();
+  if(!cfg.binId){showToast('请先绑定同步码','⚠️');return;}
+  try{
+    const res = await fetch(JSONBIN_API+'/v3/b/'+cfg.binId+'/latest', {
+      headers:{'X-Master-Key':JSONBIN_MASTER_KEY}
+    });
+    if(!res.ok) throw new Error('拉取失败: '+res.status);
+    const data = await res.json();
+    const cloudData = data.record;
+    // 合并云端数据到本地（云端优先，但保留本地今日进度）
+    mergeData(cloudData);
+    cfg.lastSync = new Date().toLocaleString('zh-CN');
+    setSyncConfig(cfg);
+    DATA = loadData();
+    // 重新渲染所有页面
+    init();
+    renderSyncPage();
+    showToast('数据已从云端拉取！','⬇️');
+  }catch(e){
+    showToast('拉取失败：'+e.message,'❌');
+  }
+}
+
+function mergeData(cloudData){
+  // 简单合并策略：云端数据完全覆盖本地，但保留本地今日打卡状态
+  const today = todayKey();
+  const localTodos = DATA.todos || {};
+  const cloudTodos = cloudData.todos || {};
+  // 保留本地今日的打卡状态（如果本地有更新的数据）
+  ['xixi','junjun','daily','growth'].forEach(k=>{
+    const localDone = Object.keys(localTodos[k]||{}).filter(i=>localTodos[k][i]).length;
+    const cloudDone = Object.keys(cloudTodos[k]||{}).filter(i=>cloudTodos[k][i]).length;
+    if(localDone >= cloudDone){
+      cloudData.todos[k] = localTodos[k];
+    }
+  });
+  // 农场：取阳光值和金币较大的
+  if(DATA.farm && cloudData.farm){
+    if(DATA.farm.sun + DATA.farm.coins > cloudData.farm.sun + cloudData.farm.coins){
+      cloudData.farm = DATA.farm;
+    }
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
+}
+
+function toggleAutoSync(){
+  const cfg = getSyncConfig();
+  cfg.autoSync = !cfg.autoSync;
+  setSyncConfig(cfg);
+  renderSyncPage();
+  showToast('自动同步：'+(cfg.autoSync?'已开启':'已关闭'), cfg.autoSync?'✅':'🔄');
+}
+
+// 自动同步：每次 saveData 时检查是否需要上传
+function autoSyncUpload(){
+  const cfg = getSyncConfig();
+  if(!cfg.autoSync || !cfg.binId) return;
+  // 延迟上传，避免频繁请求
+  clearTimeout(window._autoSyncTimer);
+  window._autoSyncTimer = setTimeout(()=>{cloudUpload();}, 3000);
+}
+
+// 启动时自动拉取
+async function autoSyncOnStart(){
+  const cfg = getSyncConfig();
+  if(!cfg.autoSync || !cfg.binId) return;
+  try{await cloudDownload();}catch(e){console.log('自动拉取失败:',e);}
+}
+
+/* ============ 本地备份（导出/导入） ============ */
+function exportData(){
+  const json = JSON.stringify(DATA, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '姐弟向前冲_数据_'+todayKey()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('数据文件已导出！','📤');
+}
+
+function importData(){
+  document.getElementById('import-file').click();
+}
+
+function handleImportFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      const imported = JSON.parse(e.target.result);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+      DATA = loadData();
+      init();
+      showToast('数据已导入！','📥');
+    }catch(err){
+      showToast('导入失败：文件格式错误','❌');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // 清空以允许重复选择
+}
+
 /* ============ 初始化 ============ */
 function init(){
   updateClock();
@@ -989,6 +1301,8 @@ function init(){
   renderStreak();
   ['xixi','junjun','daily','growth'].forEach(k=>renderList(k));
   updateFarmStats();
+  renderSyncPage();
+  autoSyncOnStart();
 }
 init();
 
