@@ -329,6 +329,70 @@ body{
 .shop-history-item .sh-time{color:var(--blue-deep);margin-right:8px;font-size:12px;}
 .shop-history-item .sh-name{color:var(--pink-deep);font-weight:500;}
 
+/* === 养宠物 === */
+.pet-scene{
+  background:linear-gradient(180deg,#87ceeb 0%,#e0f0ff 50%,#a8d8a8 70%,#7aba7a 100%);
+  border-radius:var(--radius);padding:30px 20px;text-align:center;position:relative;overflow:hidden;
+  border:4px solid #5a9a5a;box-shadow:inset 0 -4px 12px rgba(0,0,0,.1),0 8px 24px var(--shadow);
+  min-height:320px;margin-bottom:18px;
+}
+.pet-scene::before{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(135,206,235,.3),transparent);pointer-events:none;}
+.pet-clouds{position:absolute;top:12px;width:100%;pointer-events:none;}
+.pet-cloud{position:absolute;background:rgba(255,255,255,.6);border-radius:50%;filter:blur(2px);}
+.pet-dog-wrap{position:relative;margin:30px auto 10px;width:180px;height:200px;}
+.pet-dog-svg{width:180px;height:200px;transition:transform .3s;}
+.pet-dog-wrap.happy .pet-dog-svg{animation:dogHappy .6s ease-in-out 2;}
+.pet-dog-wrap.eating .pet-dog-svg{animation:dogEat .4s ease-in-out 3;}
+.pet-dog-wrap.playing .pet-dog-svg{animation:dogPlay .5s ease-in-out 3;}
+.pet-dog-wrap.bathing .pet-dog-svg{animation:dogBath .4s ease-in-out 4;}
+.pet-dog-wrap.sad .pet-dog-svg{animation:dogSad 1s ease-in-out infinite;}
+.pet-dog-wrap.sleeping .pet-dog-svg{animation:dogSleep 2s ease-in-out infinite;}
+@keyframes dogHappy{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px) rotate(-5deg);}}
+@keyframes dogEat{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.05) translateY(-3px);}}
+@keyframes dogPlay{0%,100%{transform:rotate(0) translateY(0);}25%{transform:rotate(-8deg) translateY(-8px);}75%{transform:rotate(8deg) translateY(-8px);}}
+@keyframes dogBath{0%,100%{transform:translateY(0);}25%{transform:translateY(-5px) rotate(-10deg);}50%{transform:translateY(0) rotate(0);}75%{transform:translateY(-5px) rotate(10deg);}}
+@keyframes dogSad{0%,100%{transform:translateY(0);}50%{transform:translateY(3px);}}
+@keyframes dogSleep{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+.pet-response{
+  background:#fff;border-radius:14px;padding:10px 16px;font-size:15px;color:var(--text);
+  box-shadow:0 3px 8px var(--shadow);display:inline-block;margin-top:10px;position:relative;
+  animation:fadein .4s;max-width:280px;
+}
+.pet-response::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);border:8px solid transparent;border-bottom-color:#fff;}
+.pet-name-bar{
+  font-size:16px;font-weight:600;color:var(--green-deep);margin-top:8px;display:flex;align-items:center;gap:6px;
+  justify-content:center;
+}
+.pet-mood-bar{display:flex;gap:12px;justify-content:center;margin:12px 0;flex-wrap:wrap;}
+.pet-mood-item{font-size:13px;display:flex;align-items:center;gap:5px;}
+.pet-mood-icon{font-size:18px;}
+.pet-mood-label{color:var(--text-light);}
+.pet-mood-val{font-weight:600;color:var(--green-deep);}
+.pet-mood-bar-low{color:var(--orange-deep);}
+.pet-level-badge{background:var(--yellow-deep);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600;}
+.pet-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
+.pet-action-btn{
+  background:#fff;border-radius:16px;padding:14px 10px;text-align:center;cursor:pointer;
+  border:2px solid var(--pink-light);transition:all .25s;box-shadow:0 4px 10px var(--shadow);
+}
+.pet-action-btn:hover{transform:translateY(-3px);border-color:var(--pink);box-shadow:0 6px 16px var(--shadow);}
+.pet-action-btn .pa-emoji{font-size:32px;display:block;margin-bottom:4px;}
+.pet-action-btn .pa-name{font-size:13px;font-weight:500;color:var(--text);}
+.pet-action-btn .pa-cost{font-size:11px;color:var(--orange-deep);margin-top:3px;}
+.pet-action-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.pet-stats-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.pet-stat-card{flex:1;min-width:100px;background:#fff;border-radius:16px;padding:12px;text-align:center;border:2px solid var(--green-light);box-shadow:0 4px 10px var(--shadow);}
+.pet-stat-card .ps-val{font-size:18px;font-weight:700;color:var(--green-deep);}
+.pet-stat-card .ps-label{font-size:11px;color:var(--text-light);}
+.pet-log-box{background:#fff;border-radius:var(--radius);padding:16px;border:3px solid var(--green-light);box-shadow:0 4px 12px var(--shadow);max-height:200px;overflow-y:auto;}
+.pet-log-box h3{font-size:15px;color:var(--green-deep);margin-bottom:10px;}
+.pet-log-item{font-size:12px;color:var(--text-light);padding:4px 0;border-bottom:1px dashed var(--green-light);}
+.pet-log-item:last-child{border:none;}
+.pet-name-edit{display:flex;align-items:center;gap:8px;margin:0 auto;justify-content:center;margin-bottom:8px;}
+.pet-name-edit input{border:2px solid var(--pink-light);border-radius:10px;padding:6px 10px;font-size:14px;width:120px;text-align:center;outline:none;font-family:inherit;}
+.pet-name-edit input:focus{border-color:var(--pink);}
+
+
 </style>
 </head>
 <body>
@@ -363,6 +427,9 @@ body{
     </div>
     <div class="nav-item" data-page="shop">
       <span class="icon">🎁</span><span class="label">兑换小铺</span>
+    </div>
+    <div class="nav-item" data-page="pet">
+      <span class="icon">🐕</span><span class="label">养宠物</span>
     </div>
     <div class="nav-item" data-page="sync">
       <span class="icon">☁️</span><span class="label">云同步</span>
@@ -522,6 +589,109 @@ body{
       <div class="shop-history-box">
         <h3>📜 兑换记录</h3>
         <div id="shop-history"></div>
+      </div>
+    </section>
+
+    <!-- 养宠物 -->
+    <section class="page" id="page-pet">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">🐕</span>养宠物</div>
+          <div class="page-subtitle">你的西高地小伙伴 · 用爱心陪伴它成长</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="pet-coins-display">可用积分：<b>0</b> 🪙</div>
+        </div>
+      </div>
+
+      <div class="pet-scene" id="pet-scene">
+        <!-- 云朵装饰 -->
+        <div class="pet-clouds">
+          <div class="pet-cloud" style="left:10%;top:8px;width:60px;height:22px;"></div>
+          <div class="pet-cloud" style="left:60%;top:5px;width:50px;height:18px;"></div>
+          <div class="pet-cloud" style="left:85%;top:15px;width:40px;height:14px;"></div>
+        </div>
+
+        <!-- 小花装饰 -->
+        <div style="position:absolute;bottom:8px;left:15%;font-size:16px;opacity:.7;">🌼</div>
+        <div style="position:absolute;bottom:6px;left:40%;font-size:14px;opacity:.7;">🌸</div>
+        <div style="position:absolute;bottom:10px;right:20%;font-size:16px;opacity:.7;">🌿</div>
+
+        <!-- 狗狗 -->
+        <div class="pet-dog-wrap" id="pet-dog-wrap">
+          <svg class="pet-dog-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- 西高地白梗 -->
+            <!-- 身体 -->
+            <ellipse cx="100" cy="170" rx="55" ry="40" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="2"/>
+            <!-- 脖子 -->
+            <rect x="85" y="140" width="30" height="25" rx="10" fill="#f5f0e8"/>
+            <!-- 头（大圆头，西高地特征） -->
+            <circle cx="100" cy="95" r="50" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="2"/>
+            <!-- 左耳（立耳，三角形尖尖） -->
+            <path d="M55 95 L48 55 L70 80 Z" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="2"/>
+            <!-- 右耳 -->
+            <path d="M145 95 L152 55 L130 80 Z" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="2"/>
+            <!-- 耳内粉色 -->
+            <path d="M58 90 L52 65 L68 82 Z" fill="#ffccd5"/>
+            <path d="M142 90 L148 65 L132 82 Z" fill="#ffccd5"/>
+            <!-- 头顶毛发蓬松 -->
+            <path d="M50 80 Q 55 55 75 60 Q 90 45 100 50 Q 110 45 125 60 Q 145 55 150 80" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="1.5"/>
+            <!-- 眼睛 -->
+            <circle cx="80" cy="90" r="8" fill="#2a1c10"/>
+            <circle cx="120" cy="90" r="8" fill="#2a1c10"/>
+            <!-- 眼睛高光 -->
+            <circle cx="83" cy="87" r="3" fill="#fff"/>
+            <circle cx="123" cy="87" r="3" fill="#fff"/>
+            <!-- 鼻子（黑色小圆鼻） -->
+            <ellipse cx="100" cy="108" rx="8" ry="6" fill="#2a1c10"/>
+            <!-- 鼻子高光 -->
+            <ellipse cx="98" cy="106" rx="2" ry="1.5" fill="#4a4040"/>
+            <!-- 嘴巴（微笑） -->
+            <path d="M90 114 Q 100 122 110 114" stroke="#8a6a50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- 舌头（开心时伸出） -->
+            <path id="pet-tongue" d="M95 115 Q 100 120 105 115" fill="#ffb6d5" opacity="0" style="transition:opacity .3s"/>
+            <!-- 腮红 -->
+            <ellipse cx="68" cy="100" rx="10" ry="6" fill="#ffb6d5" opacity=".4"/>
+            <ellipse cx="132" cy="100" rx="10" ry="6" fill="#ffb6d5" opacity=".4"/>
+            <!-- 前腿 -->
+            <rect x="70" y="160" width="18" height="45" rx="9" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="1.5"/>
+            <rect x="112" y="160" width="18" height="45" rx="9" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="1.5"/>
+            <!-- 脚 -->
+            <ellipse cx="79" cy="205" rx="12" ry="8" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="1.5"/>
+            <ellipse cx="121" cy="205" rx="12" ry="8" fill="#f5f0e8" stroke="#d4c8a8" stroke-width="1.5"/>
+            <!-- 尾巴（短小翘起） -->
+            <path d="M155 165 Q 168 150 160 140" stroke="#f5f0e8" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M155 165 Q 168 150 160 140" stroke="#d4c8a8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- 项圈 -->
+            <path d="M70 140 Q 100 150 130 140" stroke="#ff8fc7" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="100" cy="147" r="5" fill="#ffd633"/>
+          </svg>
+        </div>
+
+        <!-- 狗狗回应气泡 -->
+        <div class="pet-response" id="pet-response">汪汪！你好呀～ 🐾</div>
+
+        <!-- 名字 -->
+        <div class="pet-name-bar">
+          <span class="pet-level-badge" id="pet-level-badge">Lv.1</span>
+          <span id="pet-name-display">小白</span>
+          <span style="font-size:20px;">🤍</span>
+        </div>
+      </div>
+
+      <!-- 状态条 -->
+      <div class="pet-mood-bar" id="pet-mood-bar"></div>
+
+      <!-- 统计 -->
+      <div class="pet-stats-row" id="pet-stats-row"></div>
+
+      <!-- 互动按钮 -->
+      <div class="pet-actions" id="pet-actions"></div>
+
+      <!-- 日志 -->
+      <div class="pet-log-box">
+        <h3>🐾 互动日志</h3>
+        <div id="pet-log"></div>
       </div>
     </section>
 
@@ -717,6 +887,50 @@ const REWARDS = [
   {id:'big_trip', name:'一日出游', emoji:'🚗', cost:600, desc:'全家一起出去玩一天！', category:'户外'},
 ];
 
+/* ============ 宠物数据 ============ */
+const PET_ACTIONS = [
+  {id:'feed_basic', name:'喂狗粮', emoji:'🦴', cost:10, hunger:25, happiness:5, desc:'基础狗粮，填饱肚子'},
+  {id:'feed_treat', name:'喂零食', emoji:'🥩', cost:20, hunger:15, happiness:15, desc:'美味零食，狗狗超开心'},
+  {id:'feed_icecream', name:'喂冰淇淋', emoji:'🍦', cost:30, hunger:5, happiness:25, desc:'冰淇淋大惊喜！'},
+  {id:'play_walk', name:'遛狗散步', emoji:'🚶', cost:0, hunger:-10, happiness:20, desc:'出门走走，消耗体力但很开心'},
+  {id:'play_ball', name:'玩球球', emoji:'⚽', cost:5, hunger:-5, happiness:20, desc:'丢球捡球，乐此不疲'},
+  {id:'play_tug', name:'拔河游戏', emoji:'🧶', cost:5, hunger:-5, happiness:15, desc:'和狗狗一起拔河'},
+  {id:'bath', name:'洗澡', emoji:'🛁', cost:15, cleanliness:30, happiness:-5, desc:'洗香香，狗狗有点嫌弃'},
+  {id:'brush', name:'梳毛', emoji:'🪮', cost:5, cleanliness:15, happiness:10, desc:'梳理毛发，狗狗很享受'},
+  {id:'pet', name:'摸摸头', emoji:'🤗', cost:0, happiness:8, desc:'轻轻摸摸，狗狗最爱'},
+  {id:'sleep', name:'让它休息', emoji:'🛌', cost:0, hunger:5, happiness:5, desc:'狗狗也需要睡觉恢复体力'},
+];
+
+const PET_RESPONSES = {
+  feed_basic: ['好吃好吃！🐶', '吃饱啦～尾巴摇摇 🐾', '狗粮也很香的！'],
+  feed_treat: ['哇！零食！！尾巴摇疯啦 🎉', '太好吃了！再来一块好不好 🥺', '幸福汪汪～'],
+  feed_icecream: ['冰淇淋！！！天哪！😍', '甜甜蜜蜜！舔舔舔～ 🍦', '今天是最幸福的一天！'],
+  play_walk: ['出去啦出去啦！！🏃', '外面好好玩！闻到了好多味道～ 🌿', '走路走路！摇尾巴！'],
+  play_ball: ['球球球球！！追追追！⚽', '我接到了！快再丢！🐶', '玩球最开心了！'],
+  play_tug: ['拽拽拽！绝不松口！💪', '哈哈好好玩！再来！🧶', '赢了一点点！'],
+  bath: ['呜...洗澡...不太喜欢...🛁', '泡泡好多...但洗完很舒服...', '水水水...汪汪汪...忍耐中 💦'],
+  brush: ['梳毛好舒服～舒舒服服 🪮', '嗯嗯嗯...享受中...', '被梳理的感觉真好～'],
+  pet: ['摸摸！最最喜欢被摸头了！🤗', '舒服～蹭蹭你的手 🐾', '再摸摸～不要停！'],
+  sleep: ['困了...趴下...呼噜噜... 🛌', '睡觉觉...晚安汪～ 💤', '休息一下...精神满满！'],
+  sad: ['呜呜...有点无聊...🥺', '想吃东西...肚子饿了...', '想出去玩...看门看门...'],
+  hungry: ['肚子饿饿！给我吃的好不好 🍖', '饿汪汪...看我的小眼神 🥺', '什么时候吃饭呀...'],
+  dirty: ['身上有点痒痒...需要洗澡 🛁', '我好像不香了...需要梳梳毛', '泥巴...好多泥巴...'],
+  happy: ['开心开心！尾巴摇到天上去了！🎉', '今天超棒的！汪汪汪～', '有你的陪伴就是最幸福的！🤍'],
+  welcome: ['汪汪！你来了！开心开心！🐾', '等你好久啦！过来过来！', '又是新的一天！一起加油！💪'],
+};
+
+function getPetData(){
+  DATA.pet = DATA.pet || {
+    name:'小白', level:1, exp:0,
+    hunger:50, happiness:50, cleanliness:50,
+    lastFeed:null, lastPlay:null, lastBath:null,
+    log:[], totalInteractions:0
+  };
+  return DATA.pet;
+}
+
+function savePetData(){ saveData(DATA); }
+
 /* ============ 数据存储 ============ */
 const STORAGE_KEY = 'jiedi_workbench_v1';
 
@@ -802,6 +1016,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     document.getElementById('page-'+page).classList.add('active');
     if(page==='farm') renderFarm();
     if(page==='shop') renderShopPage();
+    if(page==='pet') renderPetPage();
     if(page==='sync') renderSyncPage();
   });
 });
@@ -1204,7 +1419,218 @@ function renderShopHistory(){
   });
 }
 
-/* ============ Toast & Modal ============ */
+/* ============ 养宠物 ============ */
+function renderPetPage(){
+  const pet = getPetData();
+  document.getElementById('pet-coins-display').innerHTML = `可用积分：<b>${DATA.farm.coins}</b> 🪙`;
+  document.getElementById('pet-name-display').textContent = pet.name;
+  document.getElementById('pet-level-badge').textContent = 'Lv.'+pet.level;
+
+  // 自然衰减：超过4小时没互动，饥饿/快乐/清洁缓慢下降
+  const now = Date.now();
+  const elapsed = pet.lastInteraction ? (now - pet.lastInteraction) / 3600000 : 0; // 小时数
+  if(elapsed > 4){
+    const decay = Math.floor(elapsed * 2);
+    pet.hunger = Math.max(0, pet.hunger - decay);
+    pet.happiness = Math.max(0, pet.happiness - decay * 0.5);
+    pet.cleanliness = Math.max(0, pet.cleanliness - decay * 0.3);
+    savePetData();
+  }
+  pet.lastInteraction = pet.lastInteraction || now;
+
+  // 状态条
+  const moods = [
+    {key:'hunger', label:'饱腹度', emoji:'🍖', color:'#ff8fc7'},
+    {key:'happiness', label:'快乐度', emoji:'😊', color:'#ffd633'},
+    {key:'cleanliness', label:'清洁度', emoji:'✨', color:'#7fd07a'},
+  ];
+  const moodBar = document.getElementById('pet-mood-bar');
+  moodBar.innerHTML = '';
+  moods.forEach(m=>{
+    const val = Math.round(pet[m.key]);
+    const isLow = val < 25;
+    const chip = document.createElement('div');
+    chip.className = 'pet-mood-item';
+    chip.innerHTML = `
+      <span class="pet-mood-icon">${m.emoji}</span>
+      <span class="pet-mood-label">${m.label}：</span>
+      <span class="pet-mood-val ${isLow?'pet-mood-bar-low':''}" style="color:${isLow?'var(--orange-deep)':m.color}">${val}%</span>
+    `;
+    moodBar.appendChild(chip);
+  });
+
+  // 统计卡片
+  const statsRow = document.getElementById('pet-stats-row');
+  statsRow.innerHTML = '';
+  [
+    {val:pet.level, label:'等级', emoji:'⭐'},
+    {val:pet.exp, label:'经验', emoji:'💫'},
+    {val:pet.totalInteractions, label:'总互动', emoji:'🐾'},
+    {val:DATA.farm.coins, label:'积分余额', emoji:'🪙'},
+  ].forEach(s=>{
+    const card = document.createElement('div');
+    card.className = 'pet-stat-card';
+    card.innerHTML = `<div class="ps-val">${s.emoji} ${s.val}</div><div class="ps-label">${s.label}</div>`;
+    statsRow.appendChild(card);
+  });
+
+  // 互动按钮
+  const actionsContainer = document.getElementById('pet-actions');
+  actionsContainer.innerHTML = '';
+  PET_ACTIONS.forEach(a=>{
+    const canAfford = DATA.farm.coins >= a.cost;
+    const btn = document.createElement('div');
+    btn.className = 'pet-action-btn';
+    if(!canAfford && a.cost > 0) btn.style.opacity = '.45';
+    btn.onclick = ()=>petAction(a.id);
+    btn.innerHTML = `
+      <span class="pa-emoji">${a.emoji}</span>
+      <div class="pa-name">${a.name}</div>
+      <div class="pa-cost">${a.cost > 0 ? a.cost+'积分' : '免费'}</div>
+    `;
+    actionsContainer.appendChild(btn);
+  });
+
+  // 日志
+  renderPetLog();
+
+  // 根据状态显示狗狗表情
+  updateDogExpression(pet);
+}
+
+function updateDogExpression(pet){
+  const wrap = document.getElementById('pet-dog-wrap');
+  wrap.className = 'pet-dog-wrap';
+  const tongue = document.getElementById('pet-tongue');
+  // 判断最紧急的状态
+  if(pet.hunger < 15){
+    wrap.classList.add('sad');
+    tongue.setAttribute('opacity','0');
+    showPetAutoResponse('hungry');
+  }else if(pet.happiness < 15){
+    wrap.classList.add('sad');
+    tongue.setAttribute('opacity','0');
+    showPetAutoResponse('sad');
+  }else if(pet.cleanliness < 15){
+    tongue.setAttribute('opacity','0');
+    showPetAutoResponse('dirty');
+  }else if(pet.happiness > 70){
+    wrap.classList.add('happy');
+    tongue.setAttribute('opacity','1');
+  }else{
+    tongue.setAttribute('opacity','0');
+  }
+}
+
+let _petAutoMsgShown = false;
+function showPetAutoResponse(type){
+  if(_petAutoMsgShown) return;
+  _petAutoMsgShown = true;
+  const responses = PET_RESPONSES[type] || ['汪汪...'];
+  const msg = responses[Math.floor(Math.random()*responses.length)];
+  setPetResponse(msg);
+  setTimeout(()=>{ _petAutoMsgShown = false; }, 10000);
+}
+
+function setPetResponse(msg){
+  const el = document.getElementById('pet-response');
+  el.textContent = msg;
+  el.style.animation = 'none';
+  el.offsetHeight; // trigger reflow
+  el.style.animation = 'fadein .4s';
+}
+
+function petAction(actionId){
+  const action = PET_ACTIONS.find(a=>a.id===actionId);
+  if(!action) return;
+  if(DATA.farm.coins < action.cost && action.cost > 0){
+    showToast('积分不足，再攒攒吧！','😢');
+    return;
+  }
+  const pet = getPetData();
+
+  // 扣积分
+  if(action.cost > 0) DATA.farm.coins -= action.cost;
+
+  // 更新状态
+  pet.hunger = clamp(pet.hunger + (action.hunger||0), 0, 100);
+  pet.happiness = clamp(pet.happiness + (action.happiness||0), 0, 100);
+  pet.cleanliness = clamp(pet.cleanliness + (action.cleanliness||0), 0, 100);
+  pet.totalInteractions = (pet.totalInteractions||0) + 1;
+  pet.lastInteraction = Date.now();
+
+  // 经验增长
+  pet.exp = (pet.exp||0) + 5;
+  const nextLevel = pet.level * 20;
+  if(pet.exp >= nextLevel){
+    pet.level++;
+    pet.exp = 0;
+    showToast(`小白升级到 Lv.${pet.level}！🎉`,'⭐');
+    showModal('⭐', '升级啦！', `小白成长到了 Lv.${pet.level}！\n越来越聪明可爱了～继续陪伴它吧！🤍`);
+  }
+
+  // 动画
+  const wrap = document.getElementById('pet-dog-wrap');
+  const animClass = {
+    feed_basic:'eating', feed_treat:'eating', feed_icecream:'eating',
+    play_walk:'playing', play_ball:'playing', play_tug:'playing',
+    bath:'bathing', brush:'happy', pet:'happy', sleep:'sleeping'
+  }[actionId] || 'happy';
+  wrap.className = 'pet-dog-wrap ' + animClass;
+  setTimeout(()=>{ wrap.className = 'pet-dog-wrap'; updateDogExpression(pet); }, 2000);
+
+  // 舌头显示（喂食和开心时伸出）
+  const tongue = document.getElementById('pet-tongue');
+  if(animClass === 'eating' || animClass === 'happy'){
+    tongue.setAttribute('opacity','1');
+    setTimeout(()=>{ tongue.setAttribute('opacity','0'); }, 2000);
+  }
+
+  // 回应
+  const responses = PET_RESPONSES[actionId] || ['汪汪！'];
+  const msg = responses[Math.floor(Math.random()*responses.length)];
+  setPetResponse(msg);
+
+  // 日志
+  pet.log.unshift({
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: `${action.emoji} 给${pet.name}${action.name}！${msg}`
+  });
+
+  savePetData();
+  renderPetPage();
+  showToast(`${action.emoji} ${action.name}！${msg}`, action.emoji);
+}
+
+function clamp(val, min, max){ return Math.min(max, Math.max(min, val)); }
+
+function renderPetLog(){
+  const pet = getPetData();
+  const container = document.getElementById('pet-log');
+  container.innerHTML = '';
+  if(!pet.log || pet.log.length===0){
+    container.innerHTML = '<div class="pet-log-item">还没有互动记录，快来陪陪小白吧～ 🐾</div>';
+    return;
+  }
+  pet.log.slice(0,20).forEach(l=>{
+    const item = document.createElement('div');
+    item.className = 'pet-log-item';
+    item.innerHTML = `<span style="color:var(--green-deep);margin-right:8px;">${l.time}</span>${l.text}`;
+    container.appendChild(item);
+  });
+}
+
+function changePetName(){
+  const pet = getPetData();
+  const input = document.getElementById('pet-name-input');
+  if(!input) return;
+  const newName = input.value.trim();
+  if(!newName){ showToast('请输入名字！','⚠️'); return; }
+  pet.name = newName;
+  savePetData();
+  renderPetPage();
+  showToast(`名字改成了：${newName} 🐾`,'✅');
+}
 let toastTimer = null;
 function showToast(text, icon='✅'){
   const t = document.getElementById('toast');
@@ -1476,6 +1902,7 @@ function init(){
   updateFarmStats();
   renderSyncPage();
   renderShopPage();
+  renderPetPage();
   autoSyncOnStart();
 }
 init();
