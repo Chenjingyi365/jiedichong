@@ -287,6 +287,48 @@ body{
 .sync-btn-auto.active{background:linear-gradient(135deg,var(--green-deep),#6bc46a);}
 .sync-last{font-size:12px;color:var(--text-light);margin-top:12px;}
 
+/* === 兑换小铺 === */
+.shop-welcome{
+  background:linear-gradient(135deg,var(--yellow-light),var(--pink-light));border-radius:var(--radius);
+  padding:20px 24px;text-align:center;margin-bottom:18px;border:3px solid var(--yellow);
+  box-shadow:0 6px 18px var(--shadow);
+}
+.shop-welcome-icon{font-size:42px;margin-bottom:6px;}
+.shop-welcome-text{font-size:14px;color:var(--text);line-height:1.6;}
+
+.shop-items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:20px;}
+
+.shop-reward-card{
+  background:#fff;border-radius:var(--radius);padding:18px;border:3px solid var(--pink-light);
+  box-shadow:0 6px 16px var(--shadow);transition:all .3s;position:relative;overflow:hidden;
+}
+.shop-reward-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px var(--shadow);}
+.shop-reward-card.redeemed{border-color:var(--green);background:linear-gradient(135deg,#f0fff0,#fffbe6);opacity:.7;}
+.shop-reward-card .rc-emoji{font-size:48px;display:block;margin-bottom:8px;text-align:center;}
+.shop-reward-card .rc-name{font-size:17px;font-weight:600;color:var(--text);text-align:center;margin-bottom:4px;}
+.shop-reward-card .rc-desc{font-size:12px;color:var(--text-light);text-align:center;margin-bottom:10px;line-height:1.4;}
+.shop-reward-card .rc-cost{font-size:15px;color:var(--orange-deep);font-weight:700;text-align:center;margin-bottom:12px;}
+.shop-reward-card .rc-cost b{font-size:20px;}
+.shop-reward-card .rc-btn{
+  background:linear-gradient(135deg,var(--pink-deep),var(--purple-deep));color:#fff;border:none;
+  padding:10px 0;border-radius:14px;font-size:14px;cursor:pointer;font-weight:600;width:100%;
+  box-shadow:0 4px 10px var(--shadow);transition:all .25s;
+}
+.shop-reward-card .rc-btn:hover{transform:translateY(-2px);}
+.shop-reward-card .rc-btn:disabled{background:#ccc;cursor:not-allowed;transform:none;}
+.shop-reward-card .rc-btn.redeemed-btn{background:var(--green-deep);cursor:default;}
+.shop-reward-card .rc-badge{position:absolute;top:10px;right:10px;background:var(--green-deep);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;}
+
+.shop-history-box{
+  background:#fff;border-radius:var(--radius);padding:18px;border:3px solid var(--blue-light);
+  box-shadow:0 4px 12px var(--shadow);max-height:250px;overflow-y:auto;
+}
+.shop-history-box h3{font-size:15px;color:var(--blue-deep);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.shop-history-item{font-size:13px;color:var(--text-light);padding:6px 0;border-bottom:1px dashed var(--blue-light);}
+.shop-history-item:last-child{border:none;}
+.shop-history-item .sh-time{color:var(--blue-deep);margin-right:8px;font-size:12px;}
+.shop-history-item .sh-name{color:var(--pink-deep);font-weight:500;}
+
 </style>
 </head>
 <body>
@@ -318,6 +360,9 @@ body{
     </div>
     <div class="nav-item" data-page="farm">
       <span class="icon">🌻</span><span class="label">我的农场</span>
+    </div>
+    <div class="nav-item" data-page="shop">
+      <span class="icon">🎁</span><span class="label">兑换小铺</span>
     </div>
     <div class="nav-item" data-page="sync">
       <span class="icon">☁️</span><span class="label">云同步</span>
@@ -452,6 +497,31 @@ body{
           <h3>📜 农场日志</h3>
           <div id="farm-log"></div>
         </div>
+      </div>
+    </section>
+
+    <!-- 兑换小铺 -->
+    <section class="page" id="page-shop">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">🎁</span>兑换小铺</div>
+          <div class="page-subtitle">用积分兑换小奖励 · 努力就有回报</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="shop-coins-display">当前积分：<b>0</b> 🪙</div>
+        </div>
+      </div>
+
+      <div class="shop-welcome">
+        <div class="shop-welcome-icon">🎁</div>
+        <div class="shop-welcome-text">每完成一项任务就能获得积分，攒够了就可以兑换心仪的小奖励哦！<br>坚持就是力量，努力值得被奖励 ✨</div>
+      </div>
+
+      <div class="shop-items-grid" id="shop-items-grid"></div>
+
+      <div class="shop-history-box">
+        <h3>📜 兑换记录</h3>
+        <div id="shop-history"></div>
       </div>
     </section>
 
@@ -632,6 +702,21 @@ const FERTILIZERS = [
   {id:'rainbow', name:'彩虹营养液', emoji:'🌈', cost:50, effect:5, desc:'所有植物+5级'},
 ];
 
+const REWARDS = [
+  {id:'icecream', name:'吃冰淇淋', emoji:'🍦', cost:50, desc:'甜甜的冰淇淋，清凉一夏！', category:'美食'},
+  {id:'snack', name:'买小零食', emoji:'🍿', cost:50, desc:'一包好吃的零食犒劳自己', category:'美食'},
+  {id:'drink', name:'喝奶茶', emoji:'🧋', cost:80, desc:'一杯暖暖的奶茶，开心加倍', category:'美食'},
+  {id:'movie', name:'看电影', emoji:'🎬', cost:100, desc:'和爸妈一起看一场好电影', category:'娱乐'},
+  {id:'game_time', name:'游戏30分钟', emoji:'🎮', cost:100, desc:'放松一下，玩半小时游戏', category:'娱乐'},
+  {id:'park', name:'去公园玩', emoji:'🎡', cost:120, desc:'出门走走，享受大自然', category:'户外'},
+  {id:'badges', name:'吧唧徽章', emoji:'🏅', cost:200, desc:'一个酷酷的吧唧徽章，收藏快乐', category:'收藏'},
+  {id:'book', name:'买一本喜欢的书', emoji:'📗', cost:200, desc:'一本你一直想读的书', category:'学习'},
+  {id:'stationery', name:'文具套装', emoji:'✏️', cost:250, desc:'漂亮的本子和笔，学习更有动力', category:'学习'},
+  {id:'popmart', name:'泡泡玛特', emoji:'🎀', cost:400, desc:'一个可爱的泡泡玛特盲盒！', category:'收藏'},
+  {id:'outfit', name:'买新衣服', emoji:'👗', cost:500, desc:'一件漂亮的新衣服', category:'穿搭'},
+  {id:'big_trip', name:'一日出游', emoji:'🚗', cost:600, desc:'全家一起出去玩一天！', category:'户外'},
+];
+
 /* ============ 数据存储 ============ */
 const STORAGE_KEY = 'jiedi_workbench_v1';
 
@@ -716,6 +801,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     item.classList.add('active');
     document.getElementById('page-'+page).classList.add('active');
     if(page==='farm') renderFarm();
+    if(page==='shop') renderShopPage();
     if(page==='sync') renderSyncPage();
   });
 });
@@ -1049,6 +1135,75 @@ function resetFarm(){
   showToast('农场已重置', '🔄');
 }
 
+/* ============ 兑换小铺 ============ */
+function renderShopPage(){
+  // 更新积分显示
+  document.getElementById('shop-coins-display').innerHTML = `当前积分：<b>${DATA.farm.coins}</b> 🪙`;
+  // 渲染兑换商品
+  const grid = document.getElementById('shop-items-grid');
+  grid.innerHTML = '';
+  DATA.rewards = DATA.rewards || {};
+  REWARDS.forEach(r=>{
+    const isRedeemed = DATA.rewards[r.id] || false;
+    const canAfford = DATA.farm.coins >= r.cost;
+    const card = document.createElement('div');
+    card.className = 'shop-reward-card' + (isRedeemed ? ' redeemed' : '');
+    card.innerHTML = `
+      ${isRedeemed ? '<div class="rc-badge">✅ 已兑换</div>' : ''}
+      <span class="rc-emoji">${r.emoji}</span>
+      <div class="rc-name">${r.name}</div>
+      <div class="rc-desc">${r.desc}</div>
+      <div class="rc-cost">需要 <b>${r.cost}</b> 积分 🪙</div>
+      <button class="rc-btn ${isRedeemed?'redeemed-btn':''}" ${isRedeemed || !canAfford ? 'disabled' : ''} onclick="redeemReward('${r.id}')">
+        ${isRedeemed ? '已兑换 ✅' : (canAfford ? '立即兑换 🎁' : '积分不足 😢')}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+  // 渲染兑换记录
+  renderShopHistory();
+}
+
+function redeemReward(id){
+  const r = REWARDS.find(x=>x.id===id);
+  if(!r) return;
+  if(DATA.rewards && DATA.rewards[id]){showToast('已经兑换过了！','⚠️');return;}
+  if(DATA.farm.coins < r.cost){showToast('积分不足，再努力攒攒！','😢');return;}
+  if(!confirm(`确定要花费 ${r.cost} 积分兑换「${r.name}」吗？\n兑换后积分会减少 ${r.cost}，且不可退回。`)) return;
+  DATA.farm.coins -= r.cost;
+  DATA.rewards = DATA.rewards || {};
+  DATA.rewards[id] = true;
+  DATA.shopHistory = DATA.shopHistory || [];
+  DATA.shopHistory.unshift({
+    time: new Date().toLocaleString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    date: todayKey(),
+    name: r.name,
+    emoji: r.emoji,
+    cost: r.cost
+  });
+  saveData(DATA);
+  renderShopPage();
+  renderDesktopCards();
+  showToast(`兑换成功：${r.emoji} ${r.name}！-${r.cost}积分`, '🎁');
+  showModal('🎉', '兑换成功！', `你用 ${r.cost} 积分兑换了 ${r.emoji} ${r.name}！\n\n${r.desc}\n\n继续努力，更多奖励等着你哦！ 💪✨`);
+}
+
+function renderShopHistory(){
+  const container = document.getElementById('shop-history');
+  container.innerHTML = '';
+  DATA.shopHistory = DATA.shopHistory || [];
+  if(DATA.shopHistory.length === 0){
+    container.innerHTML = '<div class="shop-history-item">还没有兑换记录，攒积分换取心仪奖励吧～ 🎁</div>';
+    return;
+  }
+  DATA.shopHistory.slice(0,20).forEach(h=>{
+    const item = document.createElement('div');
+    item.className = 'shop-history-item';
+    item.innerHTML = `<span class="sh-time">${h.date} ${h.time}</span>${h.emoji} 兑换了 <span class="sh-name">${h.name}</span>（-${h.cost}积分）`;
+    container.appendChild(item);
+  });
+}
+
 /* ============ Toast & Modal ============ */
 let toastTimer = null;
 function showToast(text, icon='✅'){
@@ -1320,6 +1475,7 @@ function init(){
   ['xixi','junjun','daily','growth'].forEach(k=>renderList(k));
   updateFarmStats();
   renderSyncPage();
+  renderShopPage();
   autoSyncOnStart();
 }
 init();
