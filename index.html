@@ -466,22 +466,26 @@ body{
 
       <div class="sync-card" id="sync-card-main">
         <div class="sync-icon">☁️</div>
-        <div class="sync-title" id="sync-status-title">尚未绑定云端</div>
-        <div class="sync-desc" id="sync-status-desc">设置一个同步码，就可以在多台设备间自动同步打卡数据</div>
+        <div class="sync-title" id="sync-status-title">创建云端空间</div>
+        <div class="sync-desc" id="sync-status-desc">首次使用点击"创建"按钮，系统会生成一个唯一ID。在另一台设备输入该ID即可同步数据。</div>
+        <div class="sync-btn-group" style="justify-content:center;">
+          <button class="sync-btn sync-btn-upload" onclick="bindSyncCode()">🆕 创建新云端空间</button>
+        </div>
         <div class="sync-code-box" id="sync-code-box">
-          <label>同步码（自定义一个好记的名字）：</label>
+          <label>已有云端ID？在此输入绑定：</label>
           <div class="sync-input-row">
-            <input type="text" id="sync-code-input" placeholder="例如：jiedi2026" maxlength="20" autocomplete="off">
-            <button class="reset-btn" onclick="bindSyncCode()" id="sync-bind-btn">🔗 绑定</button>
+            <input type="text" id="sync-existing-input" placeholder="粘贴从另一台设备复制的云端ID" autocomplete="off">
+            <button class="reset-btn" onclick="bindExistingBlob()">🔗 绑定</button>
           </div>
-          <div class="sync-hint">同步码是你的数据标识，不同设备输入相同同步码即可同步数据</div>
+          <div class="sync-hint">💡 操作流程：第一台设备点"创建"→ 复制弹窗中显示的云端ID → 第二台设备粘贴到此处绑定</div>
         </div>
       </div>
 
       <div class="sync-actions" id="sync-actions" style="display:none;">
         <div class="sync-info-row">
-          <span class="sync-label">当前同步码：</span>
+          <span class="sync-label">云端ID：</span>
           <span class="sync-val" id="sync-code-display">-</span>
+          <button class="reset-btn" style="font-size:12px;padding:6px 12px;background:var(--blue-deep);" onclick="copyBlobId()">📋 复制ID</button>
           <button class="reset-btn" style="font-size:12px;padding:6px 12px;" onclick="unbindSyncCode()">解除绑定</button>
         </div>
         <div class="sync-btn-group">
@@ -490,6 +494,7 @@ body{
           <button class="sync-btn sync-btn-auto" onclick="toggleAutoSync()" id="sync-auto-btn">🔄 自动同步：关</button>
         </div>
         <div class="sync-last" id="sync-last-info">上次同步：从未</div>
+        <div class="sync-hint" style="margin-top:10px;">💡 开启自动同步后，每次打卡会自动上传，每次打开页面自动拉取最新数据。</div>
       </div>
 
       <div class="sync-card" style="border-color:var(--yellow-light);margin-top:16px;">
@@ -1073,10 +1078,8 @@ function dailyQuoteCheck(){
   }
 }
 
-/* ============ 云同步 ============ */
-// 使用 jsonbin.io 免费云存储（API Key 是公开的免费版，每个bin独立）
-const JSONBIN_API = 'https://jsonbin.io';
-const JSONBIN_MASTER_KEY = '$2a$10$JqKq5eIAYYHmJsDqPXdP.uFJrO4HW8vWjH7Z9QF8YWpuRMz9VhRUi'; // 免费公开 master key
+/* ============ 云同步（使用 jsonblob.com 免费 API） ============ */
+const CLOUD_API = 'https://jsonblob.com/api/jsonBlob';
 
 function getSyncConfig(){
   try{return JSON.parse(localStorage.getItem('jiedi_sync_config'))||{};}catch(e){return {};}
@@ -1085,12 +1088,14 @@ function setSyncConfig(cfg){localStorage.setItem('jiedi_sync_config',JSON.string
 
 function renderSyncPage(){
   const cfg = getSyncConfig();
-  const hasBound = cfg.syncCode && cfg.binId;
+  const hasBound = cfg.blobId;
   document.getElementById('sync-card-main').style.display = hasBound ? 'none' : 'block';
   document.getElementById('sync-actions').style.display = hasBound ? 'block' : 'none';
   if(hasBound){
-    document.getElementById('sync-code-display').textContent = cfg.syncCode;
-    document.getElementById('sync-status-footer').textContent = '☁️ 已同步: '+cfg.syncCode;
+    // 显示短ID（取前8位+后4位方便辨认）
+    const shortId = cfg.blobId.slice(0,8) + '...' + cfg.blobId.slice(-4);
+    document.getElementById('sync-code-display').textContent = shortId;
+    document.getElementById('sync-status-footer').textContent = '☁️ 已同步';
     document.getElementById('sync-last-info').textContent = cfg.lastSync ? '上次同步：'+cfg.lastSync : '上次同步：从未';
     document.getElementById('sync-auto-btn').textContent = '🔄 自动同步：'+(cfg.autoSync?'开':'关');
     document.getElementById('sync-auto-btn').classList.toggle('active', cfg.autoSync);
@@ -1099,64 +1104,60 @@ function renderSyncPage(){
   }
 }
 
+// 创建新的云端数据
 async function bindSyncCode(){
-  const code = document.getElementById('sync-code-input').value.trim();
-  if(!code){showToast('请输入同步码！','⚠️');return;}
-  if(code.length<3){showToast('同步码至少3个字符！','⚠️');return;}
-  // 先尝试查找已有bin
   try{
-    const searchRes = await fetch(JSONBIN_API+'/v3/bins/search?name=jiedi_'+code, {
-      headers:{'X-Master-Key':JSONBIN_MASTER_KEY}
-    });
-    if(searchRes.ok){
-      const searchData = await searchRes.json();
-      if(searchData.length>0){
-        // 找到已有bin，绑定它
-        const cfg = getSyncConfig();
-        cfg.syncCode = code;
-        cfg.binId = searchData[0].record.metadata.id || searchData[0].id;
-        cfg.lastSync = new Date().toLocaleString('zh-CN');
-        setSyncConfig(cfg);
-        showToast('绑定成功！找到已有数据','🔗');
-        // 拉取数据
-        await cloudDownload();
-      }else{
-        // 没有已有bin，创建新的
-        await createNewBin(code);
-      }
-    }else{
-      await createNewBin(code);
-    }
-  }catch(e){
-    // jsonbin 可能搜索功能限制，直接创建
-    await createNewBin(code);
-  }
-  renderSyncPage();
-}
-
-async function createNewBin(code){
-  try{
-    const res = await fetch(JSONBIN_API+'/v3/b', {
+    showToast('正在创建云端空间...','⏳');
+    const res = await fetch(CLOUD_API, {
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'X-Master-Key':JSONBIN_MASTER_KEY,
-        'X-Bin-Name':'jiedi_'+code,
-        'X-Bin-Private':'false'
-      },
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify(DATA)
     });
-    if(!res.ok) throw new Error('创建失败: '+res.status);
-    const data = await res.json();
+    if(!res.ok) throw new Error('创建失败: HTTP '+res.status);
+    // 从 response header 获取 blob ID
+    const blobId = res.headers.get('X-jsonblob-id') || res.headers.get('Location');
+    if(!blobId){
+      // 尝试从 Location header 解析
+      const location = res.headers.get('Location');
+      if(location){
+        const parts = location.split('/');
+        const id = parts[parts.length-1];
+        if(id) setSyncConfig({blobId:id, lastSync:new Date().toLocaleString('zh-CN')});
+      }else{
+        throw new Error('无法获取云端ID');
+      }
+    }else{
+      setSyncConfig({blobId:blobId, lastSync:new Date().toLocaleString('zh-CN')});
+    }
     const cfg = getSyncConfig();
-    cfg.syncCode = code;
-    cfg.binId = data.metadata.id;
-    cfg.lastSync = new Date().toLocaleString('zh-CN');
-    setSyncConfig(cfg);
-    showToast('绑定成功！同步码：'+code,'🔗');
+    showToast('云端空间创建成功！','✅');
+    renderSyncPage();
+    // 显示完整ID，方便复制到其他设备
+    showModal('🎉', '云同步已绑定！', 
+      '你的云端数据ID如下，请在另一台设备的云同步页面输入此ID即可同步：\n\n' + 
+      cfg.blobId + '\n\n💡 建议复制保存到备忘录，方便在其他设备使用。\n\n⚠️ 此ID是唯一标识，请勿分享给他人。');
   }catch(e){
     showToast('绑定失败：'+e.message,'❌');
   }
+}
+
+// 在另一台设备输入已有的 blob ID 来绑定
+function bindExistingBlob(){
+  const inputEl = document.getElementById('sync-existing-input');
+  if(!inputEl) return;
+  const blobId = inputEl.value.trim();
+  if(!blobId){showToast('请输入云端ID！','⚠️');return;}
+  if(blobId.length<20){showToast('云端ID格式不对，请检查！','⚠️');return;}
+  setSyncConfig({blobId:blobId, lastSync:'绑定中...'});
+  renderSyncPage();
+  // 先拉取数据验证ID是否有效
+  cloudDownload().then(()=>{
+    showToast('绑定成功！数据已同步','✅');
+  }).catch(()=>{
+    showToast('ID无效或网络错误，请检查','❌');
+    setSyncConfig({});
+    renderSyncPage();
+  });
 }
 
 function unbindSyncCode(){
@@ -1168,17 +1169,14 @@ function unbindSyncCode(){
 
 async function cloudUpload(){
   const cfg = getSyncConfig();
-  if(!cfg.binId){showToast('请先绑定同步码','⚠️');return;}
+  if(!cfg.blobId){showToast('请先绑定云同步','⚠️');return;}
   try{
-    const res = await fetch(JSONBIN_API+'/v3/b/'+cfg.binId, {
+    const res = await fetch(CLOUD_API+'/'+cfg.blobId, {
       method:'PUT',
-      headers:{
-        'Content-Type':'application/json',
-        'X-Master-Key':JSONBIN_MASTER_KEY
-      },
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify(DATA)
     });
-    if(!res.ok) throw new Error('上传失败: '+res.status);
+    if(!res.ok) throw new Error('上传失败: HTTP '+res.status);
     cfg.lastSync = new Date().toLocaleString('zh-CN');
     setSyncConfig(cfg);
     renderSyncPage();
@@ -1190,20 +1188,18 @@ async function cloudUpload(){
 
 async function cloudDownload(){
   const cfg = getSyncConfig();
-  if(!cfg.binId){showToast('请先绑定同步码','⚠️');return;}
+  if(!cfg.blobId){showToast('请先绑定云同步','⚠️');return;}
   try{
-    const res = await fetch(JSONBIN_API+'/v3/b/'+cfg.binId+'/latest', {
-      headers:{'X-Master-Key':JSONBIN_MASTER_KEY}
+    showToast('正在拉取云端数据...','⏳');
+    const res = await fetch(CLOUD_API+'/'+cfg.blobId, {
+      headers:{'Accept':'application/json'}
     });
-    if(!res.ok) throw new Error('拉取失败: '+res.status);
-    const data = await res.json();
-    const cloudData = data.record;
-    // 合并云端数据到本地（云端优先，但保留本地今日进度）
+    if(!res.ok) throw new Error('拉取失败: HTTP '+res.status);
+    const cloudData = await res.json();
     mergeData(cloudData);
     cfg.lastSync = new Date().toLocaleString('zh-CN');
     setSyncConfig(cfg);
     DATA = loadData();
-    // 重新渲染所有页面
     init();
     renderSyncPage();
     showToast('数据已从云端拉取！','⬇️');
@@ -1213,24 +1209,28 @@ async function cloudDownload(){
 }
 
 function mergeData(cloudData){
-  // 简单合并策略：云端数据完全覆盖本地，但保留本地今日打卡状态
-  const today = todayKey();
+  // 合并策略：云端数据优先，但保留本地今日更优的打卡状态
   const localTodos = DATA.todos || {};
   const cloudTodos = cloudData.todos || {};
-  // 保留本地今日的打卡状态（如果本地有更新的数据）
   ['xixi','junjun','daily','growth'].forEach(k=>{
     const localDone = Object.keys(localTodos[k]||{}).filter(i=>localTodos[k][i]).length;
     const cloudDone = Object.keys(cloudTodos[k]||{}).filter(i=>cloudTodos[k][i]).length;
-    if(localDone >= cloudDone){
+    if(localDone > cloudDone){
       cloudData.todos[k] = localTodos[k];
     }
   });
-  // 农场：取阳光值和金币较大的
+  // 农场：取阳光值+金币更大的
   if(DATA.farm && cloudData.farm){
     if(DATA.farm.sun + DATA.farm.coins > cloudData.farm.sun + cloudData.farm.coins){
       cloudData.farm = DATA.farm;
     }
   }
+  // 连续打卡天数：取更大的
+  ['xixi','junjun','daily','growth'].forEach(k=>{
+    if((DATA.streak[k]||0) > (cloudData.streak[k]||0)){
+      cloudData.streak[k] = DATA.streak[k];
+    }
+  });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudData));
 }
 
@@ -1242,20 +1242,35 @@ function toggleAutoSync(){
   showToast('自动同步：'+(cfg.autoSync?'已开启':'已关闭'), cfg.autoSync?'✅':'🔄');
 }
 
-// 自动同步：每次 saveData 时检查是否需要上传
 function autoSyncUpload(){
   const cfg = getSyncConfig();
-  if(!cfg.autoSync || !cfg.binId) return;
-  // 延迟上传，避免频繁请求
+  if(!cfg.autoSync || !cfg.blobId) return;
   clearTimeout(window._autoSyncTimer);
   window._autoSyncTimer = setTimeout(()=>{cloudUpload();}, 3000);
 }
 
-// 启动时自动拉取
 async function autoSyncOnStart(){
   const cfg = getSyncConfig();
-  if(!cfg.autoSync || !cfg.binId) return;
+  if(!cfg.autoSync || !cfg.blobId) return;
   try{await cloudDownload();}catch(e){console.log('自动拉取失败:',e);}
+}
+
+function copyBlobId(){
+  const cfg = getSyncConfig();
+  if(!cfg.blobId) return;
+  // 尝试使用 Clipboard API
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cfg.blobId).then(()=>showToast('云端ID已复制！','📋'));
+  }else{
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = cfg.blobId;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('云端ID已复制！','📋');
+  }
 }
 
 /* ============ 本地备份（导出/导入） ============ */
