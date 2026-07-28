@@ -1,0 +1,24 @@
+{
+  "name": "姐弟向前冲",
+  "short_name": "姐弟向前冲",
+  "description": "可爱的每日待办打卡与植物大战僵尸农场激励工作台",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#fff9f0",
+  "theme_color": "#ffb6d5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

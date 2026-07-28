@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7cc"/>
+      <stop offset="50%" stop-color="#ffe0ef"/>
+      <stop offset="100%" stop-color="#e8f5e8"/>
+    </linearGradient>
+    <radialGradient id="petal" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0%" stop-color="#fff066"/>
+      <stop offset="60%" stop-color="#ffd633"/>
+      <stop offset="100%" stop-color="#ffaa00"/>
+    </radialGradient>
+    <radialGradient id="petalBack" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="100%" stop-color="#e69500"/>
+    </radialGradient>
+    <radialGradient id="center" cx="0.4" cy="0.4" r="0.7">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="50%" stop-color="#6b4423"/>
+      <stop offset="100%" stop-color="#4a2f1a"/>
+    </radialGradient>
+    <radialGradient id="cheek" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffb6d5" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffb6d5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="leaf" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#a8e6a3"/>
+      <stop offset="100%" stop-color="#5cc457"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+
+  <!-- 装饰小星星和点点 -->
+  <g fill="#ffd633" opacity="0.8">
+    <path d="M70 90 L73 100 L83 100 L75 106 L78 116 L70 109 L62 116 L65 106 L57 100 L67 100 Z"/>
+    <path d="M440 100 L442 108 L450 108 L444 113 L446 121 L440 116 L434 121 L436 113 L430 108 L438 108 Z" opacity="0.7"/>
+    <path d="M60 430 L62 438 L70 438 L64 443 L66 451 L60 446 L54 451 L56 443 L50 438 L58 438 Z" opacity="0.7"/>
+  </g>
+  <g fill="#ff8fc7" opacity="0.6">
+    <circle cx="445" cy="180" r="6"/>
+    <circle cx="455" cy="170" r="3.5"/>
+    <circle cx="435" cy="170" r="3.5"/>
+  </g>
+  <g fill="#7fd07a" opacity="0.6">
+    <circle cx="80" cy="200" r="5"/>
+    <circle cx="72" cy="192" r="3"/>
+    <circle cx="90" cy="192" r="3"/>
+  </g>
+
+  <!-- 花茎 -->
+  <path d="M256 320 Q 252 380 248 440" stroke="#5cc457" stroke-width="14" fill="none" stroke-linecap="round"/>
+
+  <!-- 叶子（左）-->
+  <path d="M252 370 Q 200 350 175 385 Q 200 400 230 390 Q 250 385 252 370 Z" fill="url(#leaf)"/>
+  <path d="M195 380 Q 220 378 240 378" stroke="#3da33a" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- 叶子（右）-->
+  <path d="M256 400 Q 310 385 330 420 Q 305 435 275 422 Q 260 415 256 400 Z" fill="url(#leaf)"/>
+  <path d="M310 415 Q 285 410 265 408" stroke="#3da33a" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- 后层花瓣（12片，偏移30度，较深色）-->
+  <g transform="translate(256 220)">
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(15)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(45)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(75)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(105)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(135)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(165)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(195)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(225)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(255)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(285)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(315)"/>
+    <ellipse cx="0" cy="-118" rx="38" ry="72" fill="url(#petalBack)" transform="rotate(345)"/>
+  </g>
+
+  <!-- 前层花瓣（12片，明亮色）-->
+  <g transform="translate(256 220)">
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(30)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(150)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(210)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(270)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(300)"/>
+    <ellipse cx="0" cy="-115" rx="36" ry="68" fill="url(#petal)" transform="rotate(330)"/>
+  </g>
+
+  <!-- 花心 -->
+  <circle cx="256" cy="220" r="72" fill="url(#center)"/>
+
+  <!-- 花心纹理（葵花籽点缀）-->
+  <g fill="#3a2818" opacity="0.5">
+    <circle cx="240" cy="200" r="3"/>
+    <circle cx="265" cy="195" r="3"/>
+    <circle cx="278" cy="215" r="3"/>
+    <circle cx="245" cy="225" r="3"/>
+    <circle cx="262" cy="240" r="3"/>
+    <circle cx="232" cy="215" r="3"/>
+    <circle cx="255" cy="210" r="2.5"/>
+    <circle cx="270" cy="230" r="2.5"/>
+    <circle cx="238" cy="240" r="2.5"/>
+    <circle cx="252" cy="250" r="2.5"/>
+    <circle cx="222" cy="205" r="2"/>
+    <circle cx="285" cy="205" r="2"/>
+    <circle cx="225" cy="230" r="2"/>
+    <circle cx="275" cy="250" r="2"/>
+  </g>
+
+  <!-- 可爱笑脸 -->
+  <!-- 眼睛（闭眼笑，弯弯的）-->
+  <path d="M228 210 Q 238 200 248 210" stroke="#3a2818" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <path d="M264 210 Q 274 200 284 210" stroke="#3a2818" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <!-- 腮红 -->
+  <ellipse cx="222" cy="232" rx="13" ry="7" fill="url(#cheek)"/>
+  <ellipse cx="290" cy="232" rx="13" ry="7" fill="url(#cheek)"/>
+  <!-- 嘴巴（开心微笑）-->
+  <path d="M242 238 Q 256 250 270 238" stroke="#d65a7a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- 嘴巴里的小舌头 -->
+  <path d="M250 244 Q 256 248 262 244" fill="#ff8fc7" opacity="0.6"/>
+
+  <!-- 顶部小光晕 -->
+  <ellipse cx="256" cy="120" rx="60" ry="12" fill="#fff" opacity="0.35"/>
+</svg>

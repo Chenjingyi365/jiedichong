@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffb6d5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="姐弟向前冲">
+<meta name="description" content="姐弟向前冲 - 可爱的每日待办打卡与植物大战僵尸农场激励工作台">
+<meta name="mobile-web-app-capable" content="yes">
+<title>姐弟向前冲 🌱</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ffb6d5;--pink-deep:#ff8fc7;--pink-light:#ffe0ef;
+  --green:#a8e6a3;--green-deep:#7fd07a;--green-light:#d9f7d6;
+  --yellow:#ffe066;--yellow-deep:#ffd633;--yellow-light:#fff7cc;
+  --blue:#a0e0ff;--blue-deep:#7fcdff;--blue-light:#d9f2ff;
+  --purple:#d5b3ff;--purple-deep:#c08aff;--purple-light:#f0e0ff;
+  --orange:#ffc999;--orange-deep:#ffb366;--orange-light:#ffe8d5;
+  --cream:#fff9f0;--brown:#a07050;--text:#5a4030;--text-light:#8a6a50;
+  --shadow:rgba(180,120,80,0.18);
+  --radius:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Fredoka','ZCOOL KuaiLe','Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;
+  background:linear-gradient(135deg,#ffeaf5 0%,#fff5e0 50%,#e8f5e8 100%);
+  color:var(--text);user-select:none;
+}
+/* 主容器 - 模拟手机APP */
+.app{
+  display:flex;width:100vw;height:100vh;max-width:1400px;margin:0 auto;
+  background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);
+  box-shadow:0 0 60px var(--shadow);
+}
+/* 左侧导航 */
+.sidebar{
+  width:210px;min-width:210px;background:linear-gradient(180deg,#fff 0%,#fff0f6 100%);
+  border-right:3px solid var(--pink-light);display:flex;flex-direction:column;
+  padding:18px 12px;gap:6px;overflow-y:auto;
+}
+.logo{
+  text-align:center;font-family:'Ma Shan Zheng';font-size:22px;color:var(--pink-deep);
+  padding:14px 8px 18px;border-bottom:2px dashed var(--pink-light);margin-bottom:10px;
+  line-height:1.2;
+}
+.logo .sub{font-size:11px;color:var(--text-light);font-family:'Fredoka';margin-top:4px;letter-spacing:1px;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;
+  cursor:pointer;transition:all .25s;font-size:15px;font-weight:500;color:var(--text);
+  border:2px solid transparent;position:relative;
+}
+.nav-item .icon{font-size:24px;width:32px;text-align:center;flex-shrink:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,.1));}
+.nav-item:hover{background:var(--pink-light);transform:translateX(3px);}
+.nav-item.active{background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-color:var(--pink);box-shadow:0 4px 12px var(--shadow);}
+.nav-item.active .label{color:var(--pink-deep);font-weight:600;}
+.nav-item .label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-item .badge{background:var(--green-deep);color:#fff;font-size:11px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.sidebar-footer{margin-top:auto;text-align:center;font-size:11px;color:var(--text-light);padding:10px 0 4px;border-top:2px dashed var(--pink-light);}
+.sidebar-footer .clock-mini{font-size:13px;color:var(--pink-deep);font-weight:600;margin-bottom:4px;}
+
+/* 主内容区 */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;}
+.main::-webkit-scrollbar{width:8px;}
+.main::-webkit-scrollbar-thumb{background:var(--pink);border-radius:10px;}
+.main::-webkit-scrollbar-track{background:transparent;}
+
+/* 欢迎桌面 */
+.page{display:none;padding:20px 24px;animation:fadein .4s;}
+.page.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* === 桌面首页 === */
+.desktop-hero{
+  background:linear-gradient(135deg,var(--pink-light) 0%,var(--yellow-light) 100%);
+  border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;
+  border:3px solid #fff;box-shadow:0 8px 24px var(--shadow);position:relative;overflow:hidden;
+}
+.desktop-hero::before{content:'☁️';position:absolute;font-size:50px;top:10px;right:30px;opacity:.4;animation:float 4s ease-in-out infinite;}
+.desktop-hero::after{content:'🌸';position:absolute;font-size:36px;bottom:10px;right:90px;opacity:.5;animation:float 5s ease-in-out infinite reverse;}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-10px) rotate(5deg);}}
+.hero-greeting{font-size:15px;color:var(--text-light);margin-bottom:6px;}
+.hero-title{font-family:'Ma Shan Zheng';font-size:34px;color:var(--pink-deep);margin-bottom:10px;line-height:1.2;}
+.hero-clock{
+  font-size:48px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--pink-deep),var(--purple-deep));
+  display:inline-block;padding:8px 24px;border-radius:18px;letter-spacing:2px;
+  box-shadow:0 6px 20px rgba(255,143,199,.4);font-variant-numeric:tabular-nums;
+}
+.hero-date{font-size:14px;color:var(--text-light);margin-top:10px;}
+
+/* 今日卡片网格 */
+.desktop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;}
+.dcard{
+  background:#fff;border-radius:var(--radius);padding:20px;border:3px solid var(--pink-light);
+  box-shadow:0 6px 16px var(--shadow);transition:all .3s;cursor:pointer;position:relative;overflow:hidden;
+}
+.dcard:hover{transform:translateY(-4px);box-shadow:0 12px 28px var(--shadow);}
+.dcard .dc-icon{font-size:42px;margin-bottom:8px;display:block;}
+.dcard .dc-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.dcard .dc-sub{font-size:13px;color:var(--text-light);}
+.dcard .dc-bar{height:8px;background:var(--pink-light);border-radius:6px;margin-top:12px;overflow:hidden;}
+.dcard .dc-bar-fill{height:100%;background:linear-gradient(90deg,var(--green-deep),var(--yellow-deep));border-radius:6px;transition:width .5s;}
+.dcard .dc-pct{font-size:13px;color:var(--green-deep);font-weight:600;margin-top:6px;}
+
+/* 每日激励 */
+.quote-box{
+  background:linear-gradient(135deg,#fffbe6,#fff0f6);border:3px solid var(--yellow);
+  border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;position:relative;
+  box-shadow:0 6px 18px var(--shadow);
+}
+.quote-box .q-mark{position:absolute;font-size:60px;color:var(--yellow-deep);opacity:.3;top:8px;left:14px;font-family:serif;}
+.quote-box .q-cn{font-family:'Ma Shan Zheng';font-size:22px;color:var(--text);line-height:1.6;margin-bottom:8px;padding-left:30px;}
+.quote-box .q-en{font-size:14px;color:var(--text-light);font-style:italic;padding-left:30px;line-height:1.5;}
+.quote-box .q-refresh{position:absolute;top:14px;right:14px;background:#fff;border:2px solid var(--yellow);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.quote-box .q-refresh:hover{transform:rotate(180deg);background:var(--yellow-light);}
+
+/* 打卡概览 */
+.checkin-box{background:#fff;border-radius:var(--radius);padding:20px;border:3px solid var(--green-light);box-shadow:0 6px 16px var(--shadow);margin-bottom:20px;}
+.checkin-box h3{font-size:17px;color:var(--green-deep);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.streak-row{display:flex;gap:10px;flex-wrap:wrap;}
+.streak-chip{background:var(--green-light);padding:8px 14px;border-radius:14px;font-size:13px;display:flex;align-items:center;gap:6px;}
+.streak-chip b{color:var(--green-deep);font-size:16px;}
+
+/* === 待办列表页 === */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
+.page-title{font-family:'Ma Shan Zheng';font-size:30px;display:flex;align-items:center;gap:12px;}
+.page-title .emoji{font-size:36px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.15));}
+.page-subtitle{font-size:13px;color:var(--text-light);margin-top:4px;font-family:'Fredoka';}
+.progress-summary{background:#fff;padding:12px 18px;border-radius:16px;border:2px solid var(--pink-light);font-size:14px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px var(--shadow);}
+.progress-summary b{color:var(--green-deep);font-size:18px;}
+
+.todo-list{display:flex;flex-direction:column;gap:10px;}
+.todo-item{
+  background:#fff;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px;
+  border:2px solid var(--pink-light);transition:all .3s;box-shadow:0 3px 10px var(--shadow);position:relative;
+}
+.todo-item:hover{transform:translateX(4px);border-color:var(--pink);}
+.todo-item.done{background:linear-gradient(135deg,#f0fff0,#fffbe6);border-color:var(--green);opacity:.85;}
+.todo-item.done .todo-name{text-decoration:line-through;color:var(--text-light);}
+.todo-check{
+  width:32px;height:32px;border-radius:10px;border:3px solid var(--pink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;font-size:18px;background:#fff;
+}
+.todo-check:hover{transform:scale(1.1);}
+.todo-check.checked{background:var(--green-deep);border-color:var(--green-deep);color:#fff;animation:pop .4s;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+.todo-info{flex:1;min-width:0;}
+.todo-name{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.todo-meta{font-size:12px;color:var(--text-light);display:flex;gap:8px;align-items:center;}
+.todo-meta .tag{background:var(--yellow-light);padding:1px 8px;border-radius:8px;color:var(--orange-deep);}
+.todo-points{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#fff;font-size:12px;padding:4px 10px;border-radius:12px;font-weight:600;flex-shrink:0;}
+.todo-item.done .todo-points{background:var(--green-deep);}
+
+.reset-btn{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;padding:10px 18px;border-radius:14px;font-size:13px;cursor:pointer;font-weight:500;box-shadow:0 4px 12px var(--shadow);transition:all .25s;display:flex;align-items:center;gap:6px;}
+.reset-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--shadow);}
+
+/* === 农场页 === */
+.farm-wrap{padding-bottom:30px;}
+.farm-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.stat-card{
+  flex:1;min-width:140px;background:#fff;border-radius:16px;padding:14px 18px;border:2px solid var(--yellow-light);
+  box-shadow:0 4px 12px var(--shadow);display:flex;align-items:center;gap:12px;
+}
+.stat-card .si{font-size:32px;}
+.stat-card .sv{font-size:22px;font-weight:700;color:var(--orange-deep);}
+.stat-card .sl{font-size:12px;color:var(--text-light);}
+
+.farm-field{
+  background:linear-gradient(180deg,#a8d8a8 0%,#8fc98f 50%,#7aba7a 100%);
+  border-radius:var(--radius);padding:20px;border:4px solid #6a9a6a;position:relative;
+  box-shadow:inset 0 4px 12px rgba(0,0,0,.15),0 8px 24px var(--shadow);min-height:380px;
+}
+.farm-field::before{content:'☀️';position:absolute;top:10px;right:20px;font-size:36px;animation:sunspin 12s linear infinite;}
+@keyframes sunspin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.farm-sky{position:absolute;top:10px;left:20px;font-size:14px;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.3);background:rgba(255,255,255,.3);padding:4px 12px;border-radius:10px;}
+
+.plant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:14px;margin-top:30px;position:relative;z-index:2;}
+.plant-cell{
+  background:rgba(139,90,43,.25);border-radius:14px;padding:10px 6px;text-align:center;
+  border:2px dashed rgba(139,90,43,.4);min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all .3s;
+}
+.plant-cell.has-plant{background:rgba(255,255,255,.2);border-style:solid;border-color:rgba(255,255,255,.4);}
+.plant-cell .p-emoji{font-size:38px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2));transition:transform .3s;}
+.plant-cell.has-plant:hover .p-emoji{transform:scale(1.15) translateY(-3px);}
+.plant-cell .p-name{font-size:11px;color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.4);margin-top:4px;font-weight:500;}
+.plant-cell .p-lvl{font-size:10px;color:var(--yellow);text-shadow:1px 1px 2px rgba(0,0,0,.5);margin-top:2px;}
+.plant-cell.zombie-attack{animation:shake .5s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.plant-cell .danger{position:absolute;top:-8px;right:-8px;font-size:20px;animation:danger .8s infinite;}
+@keyframes danger{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+
+.farm-shop{margin-top:18px;background:#fff;border-radius:var(--radius);padding:18px;border:3px solid var(--green-light);box-shadow:0 6px 16px var(--shadow);}
+.farm-shop h3{font-size:17px;color:var(--green-deep);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;}
+.shop-item{background:var(--green-light);border-radius:14px;padding:12px;text-align:center;border:2px solid transparent;transition:all .25s;cursor:pointer;}
+.shop-item:hover{border-color:var(--green-deep);transform:translateY(-3px);}
+.shop-item.locked{opacity:.5;cursor:not-allowed;}
+.shop-item .si{font-size:36px;}
+.shop-item .sn{font-size:13px;font-weight:600;margin:4px 0;}
+.shop-item .sc{font-size:12px;color:var(--orange-deep);font-weight:600;}
+.shop-item .sbtn{background:var(--green-deep);color:#fff;border:none;padding:5px 12px;border-radius:10px;font-size:12px;cursor:pointer;margin-top:6px;width:100%;}
+.shop-item .sbtn:disabled{background:#ccc;cursor:not-allowed;}
+.shop-item.locked .sbtn{background:#999;}
+
+.log-box{margin-top:18px;background:#fff;border-radius:var(--radius);padding:16px;border:3px solid var(--blue-light);box-shadow:0 4px 12px var(--shadow);max-height:200px;overflow-y:auto;}
+.log-box h3{font-size:15px;color:var(--blue-deep);margin-bottom:10px;}
+.log-item{font-size:12px;color:var(--text-light);padding:4px 0;border-bottom:1px dashed var(--blue-light);}
+.log-item:last-child{border:none;}
+.log-item .time{color:var(--blue-deep);margin-right:8px;}
+
+/* Toast 提示 */
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);
+  background:#fff;border-radius:16px;padding:14px 24px;box-shadow:0 8px 24px rgba(0,0,0,.2);
+  z-index:9999;transition:transform .4s;display:flex;align-items:center;gap:10px;font-size:15px;border:3px solid var(--green);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast .ti{font-size:22px;}
+
+/* 奖励弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:9998;backdrop-filter:blur(4px);}
+.modal-mask.show{display:flex;animation:fadein .3s;}
+.modal{
+  background:linear-gradient(135deg,#fff,#fff5f0);border-radius:24px;padding:30px;max-width:360px;text-align:center;
+  border:4px solid var(--yellow);box-shadow:0 12px 40px rgba(0,0,0,.3);animation:modalpop .5s;
+}
+@keyframes modalpop{0%{transform:scale(.5);opacity:0;}60%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+.modal .m-icon{font-size:64px;margin-bottom:12px;animation:float 2s ease-in-out infinite;}
+.modal .m-title{font-family:'Ma Shan Zheng';font-size:24px;color:var(--pink-deep);margin-bottom:8px;}
+.modal .m-text{font-size:14px;color:var(--text-light);margin-bottom:18px;line-height:1.6;}
+.modal .m-btn{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;padding:10px 28px;border-radius:14px;font-size:15px;cursor:pointer;font-weight:600;box-shadow:0 4px 12px var(--shadow);}
+.modal .m-btn:hover{transform:translateY(-2px);}
+
+/* 响应式 */
+@media (max-width:768px){
+  .app{flex-direction:column;}
+  .sidebar{width:100%;min-width:0;flex-direction:row;overflow-x:auto;padding:10px;gap:8px;border-right:none;border-bottom:3px solid var(--pink-light);}
+  .logo{display:none;}
+  .nav-item{flex-direction:column;gap:4px;padding:8px 12px;font-size:11px;min-width:70px;}
+  .nav-item .icon{font-size:24px;}
+  .nav-item .label{font-size:11px;}
+  .nav-item .badge{font-size:10px;padding:1px 5px;}
+  .sidebar-footer{display:none;}
+  .page{padding:14px;}
+  .hero-clock{font-size:36px;padding:6px 18px;}
+  .hero-title{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 左侧导航 -->
+  <nav class="sidebar">
+    <div class="logo">
+      🌻 姐弟向前冲<br>
+      <span class="sub">★ GROW TOGETHER ★</span>
+    </div>
+    <div class="nav-item active" data-page="desktop">
+      <span class="icon">🏠</span><span class="label">桌面</span>
+    </div>
+    <div class="nav-item" data-page="xixi">
+      <span class="icon">👧</span><span class="label">嘻嘻待办</span>
+      <span class="badge" id="badge-xixi">0/0</span>
+    </div>
+    <div class="nav-item" data-page="junjun">
+      <span class="icon">👦</span><span class="label">骏骏待办</span>
+      <span class="badge" id="badge-junjun">0/0</span>
+    </div>
+    <div class="nav-item" data-page="daily">
+      <span class="icon">🌞</span><span class="label">日常养成</span>
+      <span class="badge" id="badge-daily">0/0</span>
+    </div>
+    <div class="nav-item" data-page="growth">
+      <span class="icon">📚</span><span class="label">个人提升</span>
+      <span class="badge" id="badge-growth">0/0</span>
+    </div>
+    <div class="nav-item" data-page="farm">
+      <span class="icon">🌻</span><span class="label">我的农场</span>
+    </div>
+    <div class="sidebar-footer">
+      <div class="clock-mini" id="mini-clock">--:--</div>
+      <div>坚持就是胜利 💪</div>
+    </div>
+  </nav>
+
+  <!-- 主内容 -->
+  <main class="main">
+    <!-- 桌面首页 -->
+    <section class="page active" id="page-desktop">
+      <div class="desktop-hero">
+        <div class="hero-greeting" id="greeting">你好呀～</div>
+        <div class="hero-title">🌻 姐弟向前冲 🌱</div>
+        <div class="hero-clock" id="hero-clock">00:00</div>
+        <div class="hero-date" id="hero-date">加载中...</div>
+      </div>
+
+      <div class="desktop-grid" id="desktop-cards"></div>
+
+      <div class="quote-box">
+        <span class="q-mark">"</span>
+        <button class="q-refresh" onclick="refreshQuote()" title="换一句">🔄</button>
+        <div class="q-cn" id="quote-cn">加载中...</div>
+        <div class="q-en" id="quote-en">Loading...</div>
+      </div>
+
+      <div class="checkin-box">
+        <h3>🏆 连续打卡</h3>
+        <div class="streak-row" id="streak-row"></div>
+      </div>
+    </section>
+
+    <!-- 嘻嘻待办 -->
+    <section class="page" id="page-xixi">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">👧</span>嘻嘻待办</div>
+          <div class="page-subtitle">姐姐的每日学习清单 · 完成可获得阳光与积分</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="summary-xixi">完成 <b>0</b>/0</div>
+          <button class="reset-btn" onclick="resetList('xixi')">🔄 重置</button>
+        </div>
+      </div>
+      <div class="todo-list" id="list-xixi"></div>
+    </section>
+
+    <!-- 骏骏待办 -->
+    <section class="page" id="page-junjun">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">👦</span>骏骏待办</div>
+          <div class="page-subtitle">弟弟的每日学习清单 · 完成可获得阳光与积分</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="summary-junjun">完成 <b>0</b>/0</div>
+          <button class="reset-btn" onclick="resetList('junjun')">🔄 重置</button>
+        </div>
+      </div>
+      <div class="todo-list" id="list-junjun"></div>
+    </section>
+
+    <!-- 日常养成 -->
+    <section class="page" id="page-daily">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">🌞</span>日常养成</div>
+          <div class="page-subtitle">好习惯的每日坚持 · 小事成就大未来</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="summary-daily">完成 <b>0</b>/0</div>
+          <button class="reset-btn" onclick="resetList('daily')">🔄 重置</button>
+        </div>
+      </div>
+      <div class="todo-list" id="list-daily"></div>
+    </section>
+
+    <!-- 个人提升 -->
+    <section class="page" id="page-growth">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span class="emoji">📚</span>个人提升</div>
+          <div class="page-subtitle">自我成长每一天 · 投资自己最值得</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="progress-summary" id="summary-growth">完成 <b>0</b>/0</div>
+          <button class="reset-btn" onclick="resetList('growth')">🔄 重置</button>
+        </div>
+      </div>
+      <div class="todo-list" id="list-growth"></div>
+    </section>
+
+    <!-- 我的农场 -->
+    <section class="page" id="page-farm">
+      <div class="farm-wrap">
+        <div class="page-header">
+          <div>
+            <div class="page-title"><span class="emoji">🌻</span>我的农场</div>
+            <div class="page-subtitle">植物大战僵尸 · 完成任务守护你的小花园</div>
+          </div>
+          <button class="reset-btn" onclick="resetFarm()" style="background:linear-gradient(135deg,var(--orange),var(--pink));">⚠️ 重置农场</button>
+        </div>
+
+        <div class="farm-stats">
+          <div class="stat-card"><span class="si">☀️</span><div><div class="sv" id="sun-val">0</div><div class="sl">阳光值</div></div></div>
+          <div class="stat-card"><span class="si">🪙</span><div><div class="sv" id="coin-val">0</div><div class="sl">金币</div></div></div>
+          <div class="stat-card"><span class="si">🌱</span><div><div class="sv" id="plant-count">0</div><div class="sl">已种植物</div></div></div>
+          <div class="stat-card"><span class="si">💀</span><div><div class="sv" id="zombie-val">0</div><div class="sl">今日僵尸</div></div></div>
+        </div>
+
+        <div class="farm-field">
+          <div class="farm-sky" id="farm-sky">🌞 阳光明媚，植物们茁壮成长～</div>
+          <div class="plant-grid" id="plant-grid"></div>
+        </div>
+
+        <div class="farm-shop">
+          <h3>🛒 植物商店（用阳光值兑换）</h3>
+          <div class="shop-grid" id="shop-grid"></div>
+        </div>
+
+        <div class="farm-shop" style="border-color:var(--orange-light);margin-top:12px;">
+          <h3>🧪 肥料工坊（给所有植物施肥升级）</h3>
+          <div class="shop-grid" id="fertilizer-grid"></div>
+        </div>
+
+        <div class="log-box">
+          <h3>📜 农场日志</h3>
+          <div id="farm-log"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="ti">✅</span><span id="toast-text"></span></div>
+<!-- Modal -->
+<div class="modal-mask" id="modal-mask">
+  <div class="modal">
+    <div class="m-icon" id="modal-icon">🎉</div>
+    <div class="m-title" id="modal-title">恭喜！</div>
+    <div class="m-text" id="modal-text"></div>
+    <button class="m-btn" onclick="closeModal()">好耶！</button>
+  </div>
+</div>
+
+<script>
+/* ============ 数据定义 ============ */
+const TASKS = {
+  xixi: [
+    {name:'数学每日计算', icon:'🔢', points:10, sun:5},
+    {name:'好好扎头发', icon:'🎀', points:5, sun:3},
+    {name:'预习小四门', icon:'📖', points:12, sun:6},
+    {name:'英语单词', icon:'🔤', points:10, sun:5},
+    {name:'时文阅读理解', icon:'📰', points:10, sun:5},
+    {name:'中考真题', icon:'📝', points:15, sun:8},
+    {name:'新概念背诵', icon:'🗣️', points:12, sun:6},
+    {name:'数学思维练习', icon:'🧮', points:12, sun:6},
+    {name:'语文摘抄', icon:'✍️', points:8, sun:4},
+    {name:'练琴40分钟', icon:'🎹', points:12, sun:6},
+    {name:'课内作业', icon:'📒', points:10, sun:5},
+    {name:'好好涂唇膏', icon:'💄', points:5, sun:3},
+  ],
+  junjun: [
+    {name:'每日计算', icon:'🔢', points:8, sun:4},
+    {name:'奥数拓展', icon:'🧩', points:12, sun:6},
+    {name:'阅读理解', icon:'📚', points:10, sun:5},
+    {name:'英语u学', icon:'🔤', points:10, sun:5},
+    {name:'英语听力', icon:'🎧', points:8, sun:4},
+    {name:'阅读30分钟', icon:'📖', points:8, sun:4},
+    {name:'练琴30分钟', icon:'🎻', points:10, sun:5},
+    {name:'科学教材全练', icon:'🔬', points:12, sun:6},
+    {name:'课内作业', icon:'📒', points:10, sun:5},
+  ],
+  daily: [
+    {name:'早起', icon:'⏰', points:6, sun:3},
+    {name:'早刷牙洗脸', icon:'🪥', points:5, sun:3},
+    {name:'补充营养', icon:'🥛', points:6, sun:3},
+    {name:'晚刷牙洗脸', icon:'🌙', points:5, sun:3},
+    {name:'皮肤管理', icon:'🧴', points:6, sun:3},
+    {name:'每天4杯水', icon:'💧', points:6, sun:3},
+    {name:'运动', icon:'🏃', points:10, sun:5},
+  ],
+  growth: [
+    {name:'古法早操', icon:'🧘', points:8, sun:4},
+    {name:'每天8杯水', icon:'💧', points:6, sun:3},
+    {name:'补气血', icon:'🍵', points:8, sun:4},
+    {name:'营养包', icon:'💊', points:6, sun:3},
+    {name:'看书30分钟', icon:'📚', points:10, sun:5},
+    {name:'拉腿10分钟', icon:'🦵', points:8, sun:4},
+    {name:'热点基金推送', icon:'📊', points:8, sun:4},
+  ],
+};
+
+const QUOTES = [
+  {cn:'坚持的昨天叫立足，坚持的今天叫进取，坚持的明天叫成功。', en:'Yesterday\'s persistence is a foothold, today\'s is progress, tomorrow\'s is success.'},
+  {cn:'每一个不起舞的日子，都是对生命的辜负。', en:'Every day you don\'t dance is a betrayal of life.'},
+  {cn:'种一棵树最好的时间是十年前，其次是现在。', en:'The best time to plant a tree was 20 years ago. The second best time is now.'},
+  {cn:'你现在的努力，是为了让未来的你感谢现在的自己。', en:'Your effort today is to let the future you thank the present you.'},
+  {cn:'星光不问赶路人，时光不负有心人。', en:'Stars don\'t ask the traveler, time never fails the dedicated.'},
+  {cn:'路虽远行则将至，事虽难做则必成。', en:'Though the road is long, walking will get you there; though the task is hard, doing will see it done.'},
+  {cn:'成长是一场温柔的革命，慢慢来，比较快。', en:'Growth is a gentle revolution. Slow is fast.'},
+  {cn:'今日事今日毕，别让明天的自己为今天买单。', en:'Finish today\'s work today. Don\'t let tomorrow pay for today.'},
+  {cn:'努力的意义在于，当好运来临时，你觉得你配得上。', en:'The meaning of effort is to deserve the luck when it comes.'},
+  {cn:'与其临渊羡鱼，不如退而结网。', en:'Instead of admiring fish by the pond, better to go back and weave a net.'},
+  {cn:'你只管努力，剩下的交给时间。', en:'Just keep trying, leave the rest to time.'},
+  {cn:'读书破万卷，下笔如有神。', en:'Read ten thousand books, write as if guided by gods.'},
+  {cn:'宝剑锋从磨砺出，梅花香自苦寒来。', en:'The sword\'s edge comes from sharpening; plum blossom\'s fragrance from the cold.'},
+  {cn:'每天进步一点点，就是最好的自己。', en:'A little progress each day makes the best version of you.'},
+  {cn:'自律给我自由，坚持给我力量。', en:'Discipline gives freedom, persistence gives strength.'},
+  {cn:'少年的征途是星辰大海。', en:'A youth\'s journey is to the sea of stars.'},
+  {cn:'愿你历尽千帆，归来仍是少年。', en:'May you sail a thousand ships and return still a youth.'},
+  {cn:'不怕慢，就怕站。', en:'Don\'t fear being slow, fear standing still.'},
+  {cn:'今日你不努力争取的，明日你将失去拥有它的资格。', en:'What you don\'t fight for today, you lose the right to own tomorrow.'},
+  {cn:'生活的温柔，总会跑进你的怀里。', en:'The gentleness of life will always find its way to your arms.'},
+  {cn:'所有的好运，都是努力的伏笔。', en:'All good luck is a foreshadowing of effort.'},
+  {cn:'把简单的事做到极致，就是不简单。', en:'Doing simple things to the extreme is extraordinary.'},
+  {cn:'心若向阳，无谓悲伤。', en:'If the heart faces the sun, there is no sorrow.'},
+  {cn:'越努力，越幸运。', en:'The harder you work, the luckier you get.'},
+  {cn:'滴水穿石，非一日之功。', en:'Drops of water pierce stone — not the work of a single day.'},
+  {cn:'愿你的眼里有星辰，心中有山海。', en:'May stars fill your eyes, and seas and mountains fill your heart.'},
+  {cn:'一日之计在于晨，一年之计在于春。', en:'A day\'s plan starts in the morning; a year\'s, in spring.'},
+  {cn:'行动是治愈恐惧的良药。', en:'Action is the cure for fear.'},
+  {cn:'梦想不会逃跑，逃跑的永远是自己。', en:'Dreams don\'t run away; it\'s always you who runs.'},
+  {cn:'每朵花都有自己的花期，慢慢来。', en:'Every flower has its season. Take your time.'},
+  {cn:'知足且上进，温柔而坚定。', en:'Content yet ambitious, gentle yet firm.'},
+  {cn:'熬过无人问津的日子，才有诗和远方。', en:'After days of being unnoticed, come poetry and distant horizons.'},
+];
+
+const PLANT_SHOP = [
+  {id:'sunflower', name:'向日葵', emoji:'🌻', cost:15, desc:'基础植物'},
+  {id:'peashooter', name:'豌豆射手', emoji:'🌱', cost:30, desc:'守护植物'},
+  {id:'cherry', name:'樱桃炸弹', emoji:'🍒', cost:45, desc:'强力植物'},
+  {id:'wallnut', name:'坚果墙', emoji:'🥜', cost:35, desc:'防御植物'},
+  {id:'rose', name:'玫瑰', emoji:'🌹', cost:50, desc:'美丽花朵'},
+  {id:'cactus', name:'仙人掌', emoji:'🌵', cost:40, desc:'耐旱植物'},
+  {id:'mushroom', name:'蘑菇', emoji:'🍄', cost:25, desc:'可爱真菌'},
+  {id:'carrot', name:'胡萝卜', emoji:'🥕', cost:20, desc:'蔬菜植物'},
+  {id:'strawberry', name:'草莓', emoji:'🍓', cost:35, desc:'甜美水果'},
+  {id:'pumpkin', name:'南瓜', emoji:'🎃', cost:55, desc:'万圣节限定'},
+  {id:'tree', name:'小树苗', emoji:'🌳', cost:60, desc:'成长之树'},
+  {id:'fourleaf', name:'四叶草', emoji:'🍀', cost:70, desc:'幸运植物'},
+];
+
+const FERTILIZERS = [
+  {id:'dung', name:'普通肥料', emoji:'🧪', cost:10, effect:1, desc:'所有植物+1级'},
+  {id:'gold', name:'金色肥料', emoji:'✨', cost:25, effect:3, desc:'所有植物+3级'},
+  {id:'rainbow', name:'彩虹营养液', emoji:'🌈', cost:50, effect:5, desc:'所有植物+5级'},
+];
+
+/* ============ 数据存储 ============ */
+const STORAGE_KEY = 'jiedi_workbench_v1';
+
+function todayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+function loadData(){
+  let data = {};
+  try{ data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ data = {}; }
+  const today = todayKey();
+  // 每日重置待办完成状态（保留累计数据）
+  if(data.lastReset !== today){
+    data.todos = data.todos || {};
+    ['xixi','junjun','daily','growth'].forEach(k=>{
+      data.todos[k] = data.todos[k] || {};
+      Object.keys(data.todos[k]).forEach(i=>{ data.todos[k][i] = false; });
+    });
+    data.lastReset = today;
+    // 每日僵尸检查：如果昨天有未完成任务，僵尸吃植物
+    if(data.farm && data.farm.lastZombieCheck !== today){
+      processZombieAttack(data);
+    }
+    saveData(data);
+  }
+  // 初始化结构
+  data.todos = data.todos || {};
+  ['xixi','junjun','daily','growth'].forEach(k=>{ data.todos[k] = data.todos[k] || {}; });
+  data.farm = data.farm || {sun:0, coins:0, plants:[], log:[], lastZombieCheck:null, streak:{xixi:0,junjun:0,daily:0,growth:0}};
+  data.quoteIndex = data.quoteIndex != null ? data.quoteIndex : Math.floor(Math.random()*QUOTES.length);
+  data.streak = data.streak || {xixi:0,junjun:0,daily:0,growth:0};
+  data.lastComplete = data.lastComplete || {};
+  return data;
+}
+
+function saveData(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+let DATA = loadData();
+
+/* ============ 僵尸攻击逻辑 ============ */
+function processZombieAttack(data){
+  // 检查昨天是否所有任务都完成（基于lastComplete记录）
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+  
+  // 只有昨天有打卡记录时才检查僵尸攻击（首次使用不触发）
+  let hasYesterdayData = false;
+  let totalIncomplete = 0;
+  ['xixi','junjun','daily','growth'].forEach(k=>{
+    const tasks = TASKS[k];
+    const completed = data.lastComplete[yKey+'_'+k];
+    if(completed != null){
+      hasYesterdayData = true;
+      const incomplete = tasks.length - completed;
+      if(incomplete > 0) totalIncomplete += incomplete;
+    }
+  });
+  
+  if(hasYesterdayData && totalIncomplete > 0 && data.farm.plants.length > 0){
+    // 僵尸吃掉部分植物：每3个未完成任务吃1株
+    const eatCount = Math.min(data.farm.plants.length, Math.ceil(totalIncomplete/3));
+    const eaten = data.farm.plants.splice(0, eatCount);
+    data.farm.log.unshift({
+      time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+      text: `💀 昨日有 ${totalIncomplete} 个任务未完成，僵尸吃掉了 ${eatCount} 株植物（${eaten.map(p=>p.emoji+p.name).join('、')}）！`
+    });
+    data.farm.sun = Math.max(0, data.farm.sun - eatCount*5);
+    showToast(`💀 僵尸来袭！失去了 ${eatCount} 株植物`, '💀');
+  }else if(hasYesterdayData && totalIncomplete > 0 && data.farm.plants.length === 0){
+    data.farm.log.unshift({
+      time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+      text: `💀 昨日有 ${totalIncomplete} 个任务未完成，但农场还没有植物，僵尸空手而归！`
+    });
+  }
+  data.farm.lastZombieCheck = todayKey();
+}
+
+/* ============ 页面导航 ============ */
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('page-'+page).classList.add('active');
+    if(page==='farm') renderFarm();
+  });
+});
+
+/* ============ 时钟 ============ */
+function updateClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('hero-clock').textContent = `${h}:${m}:${s}`;
+  document.getElementById('mini-clock').textContent = `${h}:${m}`;
+  const week = ['日','一','二','三','四','五','六'][now.getDay()];
+  document.getElementById('hero-date').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · 星期${week}`;
+  // 问候语
+  const hour = now.getHours();
+  let greet = '';
+  if(hour<6) greet='夜深了，早点休息哦～';
+  else if(hour<9) greet='早安！美好的一天开始啦～';
+  else if(hour<12) greet='上午好，加油学习呀～';
+  else if(hour<14) greet='中午好，记得吃饭休息～';
+  else if(hour<18) greet='下午好，继续冲冲冲～';
+  else if(hour<22) greet='晚上好，今日辛苦啦～';
+  else greet='夜深了，注意身体哦～';
+  document.getElementById('greeting').textContent = greet;
+}
+
+/* ============ 待办列表渲染 ============ */
+function renderList(key){
+  const container = document.getElementById('list-'+key);
+  const tasks = TASKS[key];
+  const todos = DATA.todos[key];
+  container.innerHTML = '';
+  let done = 0;
+  tasks.forEach((t,i)=>{
+    const isDone = todos[i] || false;
+    if(isDone) done++;
+    const item = document.createElement('div');
+    item.className = 'todo-item' + (isDone?' done':'');
+    item.innerHTML = `
+      <div class="todo-check ${isDone?'checked':''}" onclick="toggleTodo('${key}',${i})">${isDone?'✓':''}</div>
+      <div class="todo-info">
+        <div class="todo-name">${t.icon} ${t.name}</div>
+        <div class="todo-meta"><span class="tag">${key==='xixi'?'姐姐':key==='junjun'?'弟弟':key==='daily'?'养成':'提升'}</span>+${t.points}积分 · +${t.sun}☀️</div>
+      </div>
+      <div class="todo-points">${isDone?'已获得':'+'+t.points}</div>
+    `;
+    container.appendChild(item);
+  });
+  // 更新进度
+  document.getElementById('summary-'+key).innerHTML = `完成 <b>${done}</b>/${tasks.length}`;
+  document.getElementById('badge-'+key).textContent = `${done}/${tasks.length}`;
+  document.getElementById('badge-'+key).style.background = done===tasks.length ? 'var(--pink-deep)' : 'var(--green-deep)';
+  return done;
+}
+
+function toggleTodo(key, idx){
+  const tasks = TASKS[key];
+  const t = tasks[idx];
+  const wasDone = DATA.todos[key][idx] || false;
+  DATA.todos[key][idx] = !wasDone;
+  
+  if(!wasDone){
+    // 完成任务
+    DATA.farm.sun += t.sun;
+    DATA.farm.coins += t.points;
+    DATA.farm.log.unshift({
+      time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+      text: `✅ 完成【${t.name}】，获得 ${t.points} 金币 + ${t.sun} ☀️`
+    });
+    showToast(`完成 ${t.name}！+${t.points}🪙 +${t.sun}☀️`, '✅');
+    checkAllDone(key);
+  }else{
+    // 取消完成
+    DATA.farm.sun = Math.max(0, DATA.farm.sun - t.sun);
+    DATA.farm.coins = Math.max(0, DATA.farm.coins - t.points);
+  }
+  saveData(DATA);
+  renderList(key);
+  renderDesktopCards();
+  updateFarmStats();
+}
+
+function checkAllDone(key){
+  const tasks = TASKS[key];
+  const done = tasks.filter((t,i)=>DATA.todos[key][i]).length;
+  if(done === tasks.length){
+    // 全部完成奖励
+    const bonus = 20;
+    DATA.farm.sun += bonus;
+    DATA.farm.coins += bonus*2;
+    DATA.streak[key] = (DATA.streak[key]||0) + 1;
+    DATA.lastComplete[todayKey()+'_'+key] = tasks.length;
+    DATA.farm.log.unshift({
+      time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+      text: `🎉【${key==='xixi'?'嘻嘻':key==='junjun'?'骏骏':key==='daily'?'日常养成':'个人提升'}】全部完成！连续 ${DATA.streak[key]} 天！额外奖励 +${bonus*2}🪙 +${bonus}☀️`
+    });
+    saveData(DATA);
+    showModal('🎉', '全部完成！', `太棒了！${key==='xixi'?'嘻嘻':key==='junjun'?'骏骏':key==='daily'?'日常养成':'个人提升'}清单全部搞定！\n连续打卡 ${DATA.streak[key]} 天\n额外奖励 +${bonus*2}金币 +${bonus}阳光值\n\n🌱 种下一颗希望，收获一片森林！`);
+    renderStreak();
+  }
+}
+
+function resetList(key){
+  if(!confirm(`确定要重置【${key==='xixi'?'嘻嘻待办':key==='junjun'?'骏骏待办':key==='daily'?'日常养成':'个人提升'}】的今日进度吗？`)) return;
+  DATA.todos[key] = {};
+  saveData(DATA);
+  renderList(key);
+  renderDesktopCards();
+  showToast('已重置今日进度', '🔄');
+}
+
+/* ============ 桌面卡片 ============ */
+function renderDesktopCards(){
+  const container = document.getElementById('desktop-cards');
+  const cards = [
+    {key:'xixi', icon:'👧', title:'嘻嘻待办', sub:'姐姐的学习清单'},
+    {key:'junjun', icon:'👦', title:'骏骏待办', sub:'弟弟的学习清单'},
+    {key:'daily', icon:'🌞', title:'日常养成', sub:'好习惯每日坚持'},
+    {key:'growth', icon:'📚', title:'个人提升', sub:'自我成长投资'},
+  ];
+  container.innerHTML = '';
+  cards.forEach(c=>{
+    const tasks = TASKS[c.key];
+    const done = tasks.filter((t,i)=>DATA.todos[c.key][i]).length;
+    const pct = Math.round(done/tasks.length*100);
+    const card = document.createElement('div');
+    card.className = 'dcard';
+    card.onclick = ()=>{ document.querySelector(`.nav-item[data-page="${c.key}"]`).click(); };
+    card.innerHTML = `
+      <span class="dc-icon">${c.icon}</span>
+      <div class="dc-title">${c.title}</div>
+      <div class="dc-sub">${c.sub} · ${done}/${tasks.length}</div>
+      <div class="dc-bar"><div class="dc-bar-fill" style="width:${pct}%"></div></div>
+      <div class="dc-pct">${pct}%</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* ============ 激励语 ============ */
+function renderQuote(){
+  const q = QUOTES[DATA.quoteIndex % QUOTES.length];
+  document.getElementById('quote-cn').textContent = q.cn;
+  document.getElementById('quote-en').textContent = q.en;
+}
+function refreshQuote(){
+  DATA.quoteIndex = (DATA.quoteIndex + 1) % QUOTES.length;
+  saveData(DATA);
+  renderQuote();
+  showToast('换一句加油话！', '💬');
+}
+
+/* ============ 打卡连续天数 ============ */
+function renderStreak(){
+  const container = document.getElementById('streak-row');
+  const labels = {xixi:'嘻嘻',junjun:'骏骏',daily:'日常养成',growth:'个人提升'};
+  container.innerHTML = '';
+  Object.keys(labels).forEach(k=>{
+    const chip = document.createElement('div');
+    chip.className = 'streak-chip';
+    chip.innerHTML = `${labels[k]} 🔥 <b>${DATA.streak[k]||0}</b> 天`;
+    container.appendChild(chip);
+  });
+  // 总天数
+  const total = Object.values(DATA.streak).reduce((a,b)=>a+(b||0),0);
+  const chip = document.createElement('div');
+  chip.className = 'streak-chip';
+  chip.style.background = 'var(--yellow-light)';
+  chip.innerHTML = `累计打卡 🏆 <b>${total}</b> 天`;
+  container.appendChild(chip);
+}
+
+/* ============ 农场 ============ */
+function renderFarm(){
+  renderPlantGrid();
+  renderShop();
+  renderFertilizers();
+  renderFarmLog();
+  updateFarmStats();
+}
+
+function renderPlantGrid(){
+  const grid = document.getElementById('plant-grid');
+  grid.innerHTML = '';
+  // 显示已种植 + 空位（最多12格）
+  const totalSlots = 12;
+  const plants = DATA.farm.plants;
+  for(let i=0;i<totalSlots;i++){
+    const cell = document.createElement('div');
+    cell.className = 'plant-cell';
+    if(plants[i]){
+      cell.classList.add('has-plant');
+      const p = plants[i];
+      cell.innerHTML = `
+        <div class="p-emoji">${p.emoji}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-lvl">Lv.${p.level||1}</div>
+      `;
+      cell.onclick = ()=>waterPlant(i);
+      cell.title = '点击浇水 (+1经验)';
+    }else{
+      cell.innerHTML = `<div class="p-emoji" style="opacity:.3">🌱</div><div class="p-name" style="opacity:.5">空地</div>`;
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function waterPlant(idx){
+  const p = DATA.farm.plants[idx];
+  if(!p) return;
+  p.level = (p.level||1) + 1;
+  DATA.farm.log.unshift({
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: `💦 浇水了 ${p.emoji}${p.name}，升级到 Lv.${p.level}！`
+  });
+  saveData(DATA);
+  renderPlantGrid();
+  showToast(`${p.emoji} ${p.name} 升级到 Lv.${p.level}！`, '💦');
+}
+
+function renderShop(){
+  const grid = document.getElementById('shop-grid');
+  grid.innerHTML = '';
+  PLANT_SHOP.forEach(p=>{
+    const owned = DATA.farm.plants.filter(pp=>pp.id===p.id).length;
+    const canAfford = DATA.farm.sun >= p.cost;
+    const item = document.createElement('div');
+    item.className = 'shop-item';
+    item.innerHTML = `
+      <div class="si">${p.emoji}</div>
+      <div class="sn">${p.name}</div>
+      <div class="sc">☀️ ${p.cost} · ${p.desc}</div>
+      ${owned?`<div style="font-size:11px;color:var(--green-deep);margin-top:4px;">已拥有 ${owned} 株</div>`:''}
+      <button class="sbtn" ${canAfford?'':'disabled'} onclick="buyPlant('${p.id}')">${canAfford?'种植':(owned?'已有':'阳光不足')}</button>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+function buyPlant(id){
+  const p = PLANT_SHOP.find(x=>x.id===id);
+  if(!p) return;
+  if(DATA.farm.sun < p.cost){ showToast('阳光值不足！', '⚠️'); return; }
+  if(DATA.farm.plants.length >= 12){ showToast('农场已满！先照顾好现有植物吧～', '⚠️'); return; }
+  DATA.farm.sun -= p.cost;
+  DATA.farm.plants.push({id:p.id, name:p.name, emoji:p.emoji, level:1});
+  DATA.farm.log.unshift({
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: `🌱 种下了 ${p.emoji}${p.name}！消耗 ${p.cost} ☀️`
+  });
+  saveData(DATA);
+  renderFarm();
+  showToast(`种下 ${p.emoji} ${p.name}！`, '🌱');
+  // 解锁新植物提示
+  if(PLANT_SHOP.indexOf(p) < PLANT_SHOP.length-1 && owned_types() === PLANT_SHOP.indexOf(p)+1){
+    showModal('🔓', '解锁新植物！', `你解锁了新植物：${PLANT_SHOP[PLANT_SHOP.indexOf(p)+1].emoji} ${PLANT_SHOP[PLANT_SHOP.indexOf(p)+1].name}！继续加油解锁更多～`);
+  }
+}
+function owned_types(){return new Set(DATA.farm.plants.map(p=>p.id)).size;}
+
+function renderFertilizers(){
+  const grid = document.getElementById('fertilizer-grid');
+  grid.innerHTML = '';
+  FERTILIZERS.forEach(f=>{
+    const canAfford = DATA.farm.sun >= f.cost && DATA.farm.plants.length > 0;
+    const item = document.createElement('div');
+    item.className = 'shop-item';
+    item.style.background = 'var(--orange-light)';
+    item.innerHTML = `
+      <div class="si">${f.emoji}</div>
+      <div class="sn">${f.name}</div>
+      <div class="sc">☀️ ${f.cost} · ${f.desc}</div>
+      <button class="sbtn" style="background:var(--orange-deep);" ${canAfford?'':'disabled'} onclick="buyFertilizer('${f.id}')">${canAfford?'施肥':(DATA.farm.plants.length===0?'暂无植物':'阳光不足')}</button>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+function buyFertilizer(id){
+  const f = FERTILIZERS.find(x=>x.id===id);
+  if(!f) return;
+  if(DATA.farm.plants.length === 0){ showToast('农场还没有植物！', '⚠️'); return; }
+  if(DATA.farm.sun < f.cost){ showToast('阳光值不足！', '⚠️'); return; }
+  DATA.farm.sun -= f.cost;
+  DATA.farm.plants.forEach(p=>{ p.level = (p.level||1) + f.effect; });
+  DATA.farm.log.unshift({
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
+    text: `${f.emoji} 使用了${f.name}，所有植物等级 +${f.effect}！`
+  });
+  saveData(DATA);
+  renderFarm();
+  showToast(`${f.emoji} 所有植物 +${f.effect} 级！`, f.emoji);
+}
+
+function renderFarmLog(){
+  const c = document.getElementById('farm-log');
+  c.innerHTML = '';
+  if(DATA.farm.log.length===0){ c.innerHTML = '<div class="log-item">暂无日志，开始完成任务吧～</div>'; return; }
+  DATA.farm.log.slice(0,30).forEach(l=>{
+    const item = document.createElement('div');
+    item.className = 'log-item';
+    item.innerHTML = `<span class="time">${l.time}</span>${l.text}`;
+    c.appendChild(item);
+  });
+}
+
+function updateFarmStats(){
+  document.getElementById('sun-val').textContent = DATA.farm.sun;
+  document.getElementById('coin-val').textContent = DATA.farm.coins;
+  document.getElementById('plant-count').textContent = DATA.farm.plants.length;
+  // 今日僵尸数 = 未完成任务数/3
+  let incomplete = 0;
+  ['xixi','junjun','daily','growth'].forEach(k=>{
+    incomplete += TASKS[k].filter((t,i)=>!DATA.todos[k][i]).length;
+  });
+  const zombies = Math.ceil(incomplete/3);
+  document.getElementById('zombie-val').textContent = zombies;
+  const sky = document.getElementById('farm-sky');
+  if(zombies===0) sky.textContent = '🌞 阳光明媚，植物们茁壮成长～';
+  else if(zombies<=2) sky.textContent = '⛅ 有僵尸出没，快去完成任务！';
+  else if(zombies<=4) sky.textContent = '⚠️ 僵尸来袭！再不完成会失去植物！';
+  else sky.textContent = '💀 危险！大量僵尸逼近！';
+}
+
+function resetFarm(){
+  if(!confirm('确定要重置农场吗？所有植物、阳光、金币都会清空！')) return;
+  DATA.farm = {sun:0, coins:0, plants:[], log:[{time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),text:'🔄 农场已重置，重新开始吧！'}], lastZombieCheck:todayKey()};
+  saveData(DATA);
+  renderFarm();
+  showToast('农场已重置', '🔄');
+}
+
+/* ============ Toast & Modal ============ */
+let toastTimer = null;
+function showToast(text, icon='✅'){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-text').textContent = text;
+  t.querySelector('.ti').textContent = icon;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+function showModal(icon, title, text){
+  document.getElementById('modal-icon').textContent = icon;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-text').textContent = text;
+  document.getElementById('modal-mask').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal-mask').classList.remove('show'); }
+
+/* ============ 每日激励语自动更新 ============ */
+function dailyQuoteCheck(){
+  const today = todayKey();
+  if(DATA.lastQuoteDay !== today){
+    DATA.quoteIndex = Math.floor(Math.random()*QUOTES.length);
+    DATA.lastQuoteDay = today;
+    saveData(DATA);
+    renderQuote();
+  }
+}
+
+/* ============ 初始化 ============ */
+function init(){
+  updateClock();
+  setInterval(updateClock, 1000);
+  dailyQuoteCheck();
+  renderQuote();
+  renderDesktopCards();
+  renderStreak();
+  ['xixi','junjun','daily','growth'].forEach(k=>renderList(k));
+  updateFarmStats();
+}
+init();
+
+/* ============ PWA Service Worker 注册 ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker 注册成功:', reg.scope))
+      .catch(err => console.log('Service Worker 注册失败:', err));
+  });
+}
+</script>
+</body>
+</html>
