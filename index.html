@@ -484,7 +484,7 @@ body{
       <div class="page-header">
         <div>
           <div class="page-title"><span class="emoji">👧</span>嘻嘻待办</div>
-          <div class="page-subtitle">姐姐的每日学习清单 · 完成可获得阳光与积分</div>
+          <div class="page-subtitle">嘻嘻的每日学习清单 · 完成可获得阳光与积分</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
           <div class="progress-summary" id="summary-xixi">完成 <b>0</b>/0</div>
@@ -499,7 +499,7 @@ body{
       <div class="page-header">
         <div>
           <div class="page-title"><span class="emoji">👦</span>骏骏待办</div>
-          <div class="page-subtitle">弟弟的每日学习清单 · 完成可获得阳光与积分</div>
+          <div class="page-subtitle">骏骏的每日学习清单 · 完成可获得阳光与积分</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
           <div class="progress-summary" id="summary-junjun">完成 <b>0</b>/0</div>
@@ -587,23 +587,23 @@ body{
           <div class="page-subtitle">用积分兑换小奖励 · 嘻嘻和骏骏各有自己的积分账户</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <div class="progress-summary" style="border-color:var(--pink-light);">👧 姐姐积分：<b id="shop-coins-xixi">0</b></div>
-          <div class="progress-summary" style="border-color:var(--green-light);">👦 弟弟积分：<b id="shop-coins-junjun">0</b></div>
+          <div class="progress-summary" style="border-color:var(--pink-light);">👧 嘻嘻积分：<b id="shop-coins-xixi">0</b></div>
+          <div class="progress-summary" style="border-color:var(--green-light);">👦 骏骏积分：<b id="shop-coins-junjun">0</b></div>
         </div>
       </div>
 
       <div class="shop-welcome">
         <div class="shop-welcome-icon">🎁</div>
-        <div class="shop-welcome-text">姐姐和弟弟各有独立积分账户，兑换时选择用谁的积分来兑换！<br>日常养成和个人提升的积分两人平分 ✨</div>
+        <div class="shop-welcome-text">嘻嘻和骏骏各有独立积分账户，兑换时选择用谁的积分来兑换！<br>日常养成和个人提升的积分两人平分 ✨</div>
       </div>
 
-      <!-- 姐姐兑换区 -->
+      <!-- 嘻嘻兑换区 -->
       <div style="margin-bottom:20px;">
         <div style="font-size:18px;font-weight:600;color:var(--pink-deep);margin-bottom:12px;display:flex;align-items:center;gap:8px;">👧 嘻嘻的兑换区</div>
         <div class="shop-items-grid" id="shop-items-xixi"></div>
       </div>
 
-      <!-- 弟弟兑换区 -->
+      <!-- 骏骏兑换区 -->
       <div style="margin-bottom:20px;">
         <div style="font-size:18px;font-weight:600;color:var(--green-deep);margin-bottom:12px;display:flex;align-items:center;gap:8px;">👦 骏骏的兑换区</div>
         <div class="shop-items-grid" id="shop-items-junjun"></div>
@@ -711,8 +711,8 @@ body{
       <!-- 积分选择器 -->
       <div class="pet-coin-selector" id="pet-coin-selector">
         <span class="pcs-label">💰 消耗谁的积分：</span>
-        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="xixi" checked onchange="renderPetPage()"> <span class="pcs-xixi">👧 姐姐 (<b id="pcs-xixi-val">0</b>)</span></label>
-        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="junjun" onchange="renderPetPage()"> <span class="pcs-junjun">👦 弟弟 (<b id="pcs-junjun-val">0</b>)</span></label>
+        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="xixi" checked onchange="renderPetPage()"> <span class="pcs-xixi">👧 嘻嘻 (<b id="pcs-xixi-val">0</b>)</span></label>
+        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="junjun" onchange="renderPetPage()"> <span class="pcs-junjun">👦 骏骏 (<b id="pcs-junjun-val">0</b>)</span></label>
       </div>
 
       <!-- 互动按钮 -->
@@ -1097,7 +1097,7 @@ function renderList(key){
       <div class="todo-check ${isDone?'checked':''}" onclick="toggleTodo('${key}',${i})">${isDone?'✓':''}</div>
       <div class="todo-info">
         <div class="todo-name">${t.icon} ${t.name}</div>
-        <div class="todo-meta"><span class="tag">${key==='xixi'?'姐姐':key==='junjun'?'弟弟':key==='daily'?'养成':'提升'}</span>+${t.points}${key==='xixi'?'姐姐积分':key==='junjun'?'弟弟积分':key==='daily'?'各半积分':'各半积分'} · +${t.sun}☀️</div>
+        <div class="todo-meta"><span class="tag">${key==='xixi'?'嘻嘻':key==='junjun'?'骏骏':key==='daily'?'养成':'提升'}</span>+${t.points}${key==='xixi'?'嘻嘻积分':key==='junjun'?'骏骏积分':key==='daily'?'各半积分':'各半积分'} · +${t.sun}☀️</div>
       </div>
       <div class="todo-points">${isDone?'已获得':'+'+t.points}</div>
     `;
@@ -1122,10 +1122,10 @@ function toggleTodo(key, idx){
     let pointsMsg = '';
     if(key === 'xixi'){
       DATA.coins_xixi = (DATA.coins_xixi||0) + t.points;
-      pointsMsg = `姐姐积分 +${t.points}`;
+      pointsMsg = `嘻嘻积分 +${t.points}`;
     }else if(key === 'junjun'){
       DATA.coins_junjun = (DATA.coins_junjun||0) + t.points;
-      pointsMsg = `弟弟积分 +${t.points}`;
+      pointsMsg = `骏骏积分 +${t.points}`;
     }else if(key === 'daily'){
       // 日常养成：平分给两人
       const half = Math.ceil(t.points / 2);
@@ -1171,10 +1171,10 @@ function checkAllDone(key){
     let bonusMsg = '';
     if(key === 'xixi'){
       DATA.coins_xixi = (DATA.coins_xixi||0) + bonus*2;
-      bonusMsg = '姐姐积分+'+bonus*2;
+      bonusMsg = '嘻嘻积分+'+bonus*2;
     }else if(key === 'junjun'){
       DATA.coins_junjun = (DATA.coins_junjun||0) + bonus*2;
-      bonusMsg = '弟弟积分+'+bonus*2;
+      bonusMsg = '骏骏积分+'+bonus*2;
     }else{
       DATA.coins_xixi = (DATA.coins_xixi||0) + bonus;
       DATA.coins_junjun = (DATA.coins_junjun||0) + bonus;
@@ -1205,8 +1205,8 @@ function resetList(key){
 function renderDesktopCards(){
   const container = document.getElementById('desktop-cards');
   const cards = [
-    {key:'xixi', icon:'👧', title:'嘻嘻待办', sub:'姐姐的学习清单'},
-    {key:'junjun', icon:'👦', title:'骏骏待办', sub:'弟弟的学习清单'},
+    {key:'xixi', icon:'👧', title:'嘻嘻待办', sub:'嘻嘻的学习清单'},
+    {key:'junjun', icon:'👦', title:'骏骏待办', sub:'骏骏的学习清单'},
     {key:'daily', icon:'🌞', title:'日常养成', sub:'好习惯每日坚持'},
     {key:'growth', icon:'📚', title:'个人提升', sub:'自我成长投资'},
   ];
@@ -1429,9 +1429,9 @@ function renderShopPage(){
   DATA.coins_junjun = DATA.coins_junjun || 0;
   document.getElementById('shop-coins-xixi').textContent = DATA.coins_xixi;
   document.getElementById('shop-coins-junjun').textContent = DATA.coins_junjun;
-  // 渲染姐姐兑换区
+  // 渲染嘻嘻兑换区
   renderShopGrid('xixi', 'shop-items-xixi', DATA.coins_xixi);
-  // 渲染弟弟兑换区
+  // 渲染骏骏兑换区
   renderShopGrid('junjun', 'shop-items-junjun', DATA.coins_junjun);
   // 渲染兑换记录
   renderShopHistory();
@@ -1470,7 +1470,7 @@ function redeemReward(owner, id){
   if(DATA.rewards[owner][id]){showToast('已经兑换过了！','⚠️');return;}
   const coinsKey = owner === 'xixi' ? 'coins_xixi' : 'coins_junjun';
   const coinsVal = DATA[coinsKey] || 0;
-  const ownerName = owner === 'xixi' ? '姐姐' : '弟弟';
+  const ownerName = owner === 'xixi' ? '嘻嘻' : '骏骏';
   if(coinsVal < r.cost){showToast(`${ownerName}积分不足，再努力攒攒！`,'😢');return;}
   if(!confirm(`${ownerName}确定要花费 ${r.cost} 积分兑换「${r.name}」吗？\n兑换后${ownerName}积分会减少 ${r.cost}，且不可退回。`)) return;
   DATA[coinsKey] = coinsVal - r.cost;
@@ -1510,7 +1510,7 @@ function renderShopHistory(){
 /* ============ 养宠物 ============ */
 function renderPetPage(){
   const pet = getPetData();
-  document.getElementById('pet-coins-display').innerHTML = '👧 姐姐积分：<b>'+(DATA.coins_xixi||0)+'</b> | 👦 弟弟积分：<b>'+(DATA.coins_junjun||0)+'</b>';
+  document.getElementById('pet-coins-display').innerHTML = '👧 嘻嘻积分：<b>'+(DATA.coins_xixi||0)+'</b> | 👦 骏骏积分：<b>'+(DATA.coins_junjun||0)+'</b>';
   // 更新积分选择器显示
   const pcsXixi = document.getElementById('pcs-xixi-val');
   const pcsJunjun = document.getElementById('pcs-junjun-val');
@@ -1559,8 +1559,8 @@ function renderPetPage(){
     {val:pet.level, label:'等级', emoji:'⭐'},
     {val:pet.exp, label:'经验', emoji:'💫'},
     {val:pet.totalInteractions, label:'总互动', emoji:'🐾'},
-    {val:DATA.coins_xixi||0, label:'姐姐积分', emoji:'👧'},
-    {val:DATA.coins_junjun||0, label:'弟弟积分', emoji:'👦'},
+    {val:DATA.coins_xixi||0, label:'嘻嘻积分', emoji:'👧'},
+    {val:DATA.coins_junjun||0, label:'骏骏积分', emoji:'👦'},
   ].forEach(s=>{
     const card = document.createElement('div');
     card.className = 'pet-stat-card';
@@ -1576,7 +1576,7 @@ function renderPetPage(){
   const selectedOwner = selectedRadio ? selectedRadio.value : 'xixi';
   const selectedCoinsKey = selectedOwner === 'xixi' ? 'coins_xixi' : 'coins_junjun';
   const selectedCoins = DATA[selectedCoinsKey] || 0;
-  const ownerName = selectedOwner === 'xixi' ? '姐姐' : '弟弟';
+  const ownerName = selectedOwner === 'xixi' ? '嘻嘻' : '骏骏';
   PET_ACTIONS.forEach(a=>{
     const canAfford = selectedCoins >= a.cost;
     const btn = document.createElement('div');
@@ -1652,7 +1652,7 @@ function petAction(actionId){
     const owner = selectedOwner ? selectedOwner.value : 'xixi';
     const coinsKey = owner === 'xixi' ? 'coins_xixi' : 'coins_junjun';
     const coinsVal = DATA[coinsKey] || 0;
-    who = owner === 'xixi' ? '姐姐' : '弟弟';
+    who = owner === 'xixi' ? '嘻嘻' : '骏骏';
     if(coinsVal < action.cost){
       showToast(who + '积分不足！当前只有' + coinsVal + '积分','😢');
       return;
