@@ -371,6 +371,18 @@ body{
 .pet-mood-bar-low{color:var(--orange-deep);}
 .pet-level-badge{background:var(--yellow-deep);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600;}
 .pet-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
+
+.pet-coin-selector{
+  background:#fff;border-radius:16px;padding:14px 18px;border:2px solid var(--yellow-light);
+  box-shadow:0 4px 10px var(--shadow);margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.pet-coin-selector .pcs-label{font-size:14px;font-weight:600;color:var(--text);}
+.pet-coin-selector .pcs-option{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;}
+.pet-coin-selector .pcs-option input{cursor:pointer;width:18px;height:18px;}
+.pet-coin-selector .pcs-xixi{color:var(--pink-deep);}
+.pet-coin-selector .pcs-junjun{color:var(--green-deep);}
+.pet-coin-selector .pcs-option input:checked + span{font-weight:700;}
+.pet-coin-selector .pcs-disabled{opacity:.4;pointer-events:none;}
 .pet-action-btn{
   background:#fff;border-radius:16px;padding:14px 10px;text-align:center;cursor:pointer;
   border:2px solid var(--pink-light);transition:all .25s;box-shadow:0 4px 10px var(--shadow);
@@ -695,6 +707,13 @@ body{
 
       <!-- 统计 -->
       <div class="pet-stats-row" id="pet-stats-row"></div>
+
+      <!-- 积分选择器 -->
+      <div class="pet-coin-selector" id="pet-coin-selector">
+        <span class="pcs-label">💰 消耗谁的积分：</span>
+        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="xixi" checked onchange="renderPetPage()"> <span class="pcs-xixi">👧 姐姐 (<b id="pcs-xixi-val">0</b>)</span></label>
+        <label class="pcs-option"><input type="radio" name="pet-coin-owner" value="junjun" onchange="renderPetPage()"> <span class="pcs-junjun">👦 弟弟 (<b id="pcs-junjun-val">0</b>)</span></label>
+      </div>
 
       <!-- 互动按钮 -->
       <div class="pet-actions" id="pet-actions"></div>
@@ -1491,7 +1510,12 @@ function renderShopHistory(){
 /* ============ 养宠物 ============ */
 function renderPetPage(){
   const pet = getPetData();
-  document.getElementById('pet-coins-display').innerHTML = `👧 姐姐积分：<b>${DATA.coins_xixi||0}</b> | 👦 弟弟积分：<b>${DATA.coins_junjun||0}</b>`;
+  document.getElementById('pet-coins-display').innerHTML = '👧 姐姐积分：<b>'+(DATA.coins_xixi||0)+'</b> | 👦 弟弟积分：<b>'+(DATA.coins_junjun||0)+'</b>';
+  // 更新积分选择器显示
+  const pcsXixi = document.getElementById('pcs-xixi-val');
+  const pcsJunjun = document.getElementById('pcs-junjun-val');
+  if(pcsXixi) pcsXixi.textContent = DATA.coins_xixi||0;
+  if(pcsJunjun) pcsJunjun.textContent = DATA.coins_junjun||0;
   document.getElementById('pet-name-display').textContent = pet.name;
   document.getElementById('pet-level-badge').textContent = 'Lv.'+pet.level;
 
@@ -1547,8 +1571,14 @@ function renderPetPage(){
   // 互动按钮
   const actionsContainer = document.getElementById('pet-actions');
   actionsContainer.innerHTML = '';
+  // 获取当前选择的积分来源
+  const selectedRadio = document.querySelector('input[name="pet-coin-owner"]:checked');
+  const selectedOwner = selectedRadio ? selectedRadio.value : 'xixi';
+  const selectedCoinsKey = selectedOwner === 'xixi' ? 'coins_xixi' : 'coins_junjun';
+  const selectedCoins = DATA[selectedCoinsKey] || 0;
+  const ownerName = selectedOwner === 'xixi' ? '姐姐' : '弟弟';
   PET_ACTIONS.forEach(a=>{
-    const canAfford = (DATA.coins_xixi||0) >= a.cost || (DATA.coins_junjun||0) >= a.cost || ((DATA.coins_xixi||0)+(DATA.coins_junjun||0)) >= a.cost;
+    const canAfford = selectedCoins >= a.cost;
     const btn = document.createElement('div');
     btn.className = 'pet-action-btn';
     if(!canAfford && a.cost > 0) btn.style.opacity = '.45';
@@ -1556,7 +1586,7 @@ function renderPetPage(){
     btn.innerHTML = `
       <span class="pa-emoji">${a.emoji}</span>
       <div class="pa-name">${a.name}</div>
-      <div class="pa-cost">${a.cost > 0 ? '消耗'+a.cost+'积分(谁的积分多用谁的)' : '免费'}</div>
+      <div class="pa-cost">${a.cost > 0 ? a.cost+'积分('+ownerName+')' : '免费'}</div>
     `;
     actionsContainer.appendChild(btn);
   });
@@ -1613,33 +1643,21 @@ function setPetResponse(msg){
 function petAction(actionId){
   const action = PET_ACTIONS.find(a=>a.id===actionId);
   if(!action) return;
+  const pet = getPetData(); // ✅ 关键修复：必须获取 pet 对象
+
+  // 获取用户选择的积分来源
   let who = '';
   if(action.cost > 0){
-    // 选择用谁的积分：优先用积分较多的那个人
-    const xixiCoins = DATA.coins_xixi || 0;
-    const junjunCoins = DATA.coins_junjun || 0;
-    if(xixiCoins >= action.cost && xixiCoins >= junjunCoins){
-      DATA.coins_xixi = xixiCoins - action.cost;
-      who = '姐姐';
-    }else if(junjunCoins >= action.cost){
-      DATA.coins_junjun = junjunCoins - action.cost;
-      who = '弟弟';
-    }else if(xixiCoins + junjunCoins >= action.cost){
-      // 合资：先用一个人的，不够再用另一个的
-      let remaining = action.cost;
-      if(junjunCoins > 0){
-        const use = Math.min(junjunCoins, remaining);
-        DATA.coins_junjun = junjunCoins - use;
-        remaining -= use;
-      }
-      if(remaining > 0){
-        DATA.coins_xixi = xixiCoins - remaining;
-      }
-      who = '姐弟合资';
-    }else{
-      showToast('两人积分加起来都不够！','😢');
+    const selectedOwner = document.querySelector('input[name="pet-coin-owner"]:checked');
+    const owner = selectedOwner ? selectedOwner.value : 'xixi';
+    const coinsKey = owner === 'xixi' ? 'coins_xixi' : 'coins_junjun';
+    const coinsVal = DATA[coinsKey] || 0;
+    who = owner === 'xixi' ? '姐姐' : '弟弟';
+    if(coinsVal < action.cost){
+      showToast(who + '积分不足！当前只有' + coinsVal + '积分','😢');
       return;
     }
+    DATA[coinsKey] = coinsVal - action.cost;
   }
 
   // 更新状态
@@ -1655,8 +1673,8 @@ function petAction(actionId){
   if(pet.exp >= nextLevel){
     pet.level++;
     pet.exp = 0;
-    showToast(`小白升级到 Lv.${pet.level}！🎉`,'⭐');
-    showModal('⭐', '升级啦！', `小白成长到了 Lv.${pet.level}！\n越来越聪明可爱了～继续陪伴它吧！🤍`);
+    showToast('小白升级到 Lv.'+pet.level+'！🎉','⭐');
+    showModal('⭐', '升级啦！', '小白成长到了 Lv.'+pet.level+'！\n越来越聪明可爱了～继续陪伴它吧！🤍');
   }
 
   // 动画
@@ -1684,12 +1702,13 @@ function petAction(actionId){
   // 日志
   pet.log.unshift({
     time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),
-    text: `${action.emoji} 给${pet.name}${action.name}！${msg}`
+    text: action.emoji + ' ' + (who ? who+'花'+action.cost+'积分给' : '') + pet.name + action.name + '！' + msg
   });
 
   savePetData();
   renderPetPage();
-  showToast(`${action.emoji} ${action.name}！${msg}`, action.emoji);
+  const costMsg = action.cost > 0 ? '（'+who+' -'+action.cost+'积分）' : '';
+  showToast(action.emoji + ' ' + action.name + '！' + msg + costMsg, action.emoji);
 }
 
 function clamp(val, min, max){ return Math.min(max, Math.max(min, val)); }
